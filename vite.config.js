@@ -5,15 +5,11 @@ import path from "path";
 export default defineConfig({
   plugins: [react()],
   build: {
-    outDir: "dist",
     lib: {
       entry: path.resolve(__dirname, "src/main.jsx"),
       name: "ChatWidget",
-      fileName: (format) => `chat-widget.${format}.js`,
+      fileName: "chat-widget",
     },
-    rollupOptions: {
-      // Include React in the bundle so it works standalone
-      external: [],
-    },
+    outDir: "dist",
   },
 });
