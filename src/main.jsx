@@ -1,15 +1,23 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import ChatWidget from "./ChatWidget";
 import "./index.css";
+import ChatWidget from "./ChatWidget";
 
-// Expose a function to initialize the widget on any page
-window.initChatWidget = (elementId, props = {}) => {
-  const el = document.getElementById(elementId);
-  if (!el) {
-    console.error(`Element #${elementId} not found`);
+// Expose function globally
+window.initChatWidget = function (containerId, props = {}) {
+  const container = document.getElementById(containerId);
+  if (!container) {
+    console.error(`Container with id "${containerId}" not found`);
     return;
   }
 
-  ReactDOM.createRoot(el).render(<ChatWidget {...props} />);
+  ReactDOM.createRoot(container).render(
+    <React.StrictMode>
+      <ChatWidget />
+    </React.StrictMode>
+  );
 };
+
+// Call it immediately for local testing
+window.initChatWidget("root");
+
