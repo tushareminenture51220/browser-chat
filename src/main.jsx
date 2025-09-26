@@ -1,10 +1,21 @@
+// import React from "react";
+// import ReactDOM from "react-dom/client";
+// import ChatWidget from "./ChatWidget";
+// import "./index.css";
+
+// ReactDOM.createRoot(document.getElementById("root")).render(
+//   <React.StrictMode>
+//     <ChatWidget />
+//   </React.StrictMode>
+// );
+
+
+// src/main.jsx
 import React from "react";
 import ReactDOM from "react-dom/client";
-import "./index.css";
 import ChatWidget from "./ChatWidget";
 
-// Expose function globally
-window.initChatWidget = function (containerId, props = {}) {
+function initChatWidget(containerId, props = {}) {
   const container = document.getElementById(containerId);
   if (!container) {
     console.error(`Container with id "${containerId}" not found`);
@@ -13,11 +24,15 @@ window.initChatWidget = function (containerId, props = {}) {
 
   ReactDOM.createRoot(container).render(
     <React.StrictMode>
-      <ChatWidget />
+      <ChatWidget {...props} />
     </React.StrictMode>
   );
-};
+}
 
-// Call it immediately for local testing
-window.initChatWidget("root");
+// Only attach when running in browser
+if (typeof window !== "undefined") {
+  window.ChatWidget = { initChatWidget };
+}
 
+// Export for module usage
+export { initChatWidget };
