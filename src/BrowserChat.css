@@ -13,7 +13,7 @@
 .chat-sidebar {
   position: fixed;
   bottom: 0;
-  left: 0;
+  right: 0;
   width: 320px;
   height: 80vh;
   background: #fff;
@@ -187,10 +187,17 @@
   color: #2563eb;
 }
 
-.chat-windows {
+/* .chat-windows {
   display: flex;
-  margin-left: 320px;
+  margin-left: 700px;
   gap: 3px;
   height: 80vh;
-  margin-top: 73px;
+  margin-top: 104px;
+} */
+
+.chat-windows {
+  position: relative;
+  display: flex;
+  gap: 16px; /* spacing between chat windows */
 }
+

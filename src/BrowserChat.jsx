@@ -239,11 +239,12 @@ const BrowserChat = ({ onClose: externalOnClose, initialUser }) => {
       </div>
 
       <div className="chat-windows">
-        {openChats.map((user) => (
+        {openChats.map((user, index) => (
           <BrowserChatWindow
             key={user.id}
             chatUser={user}
             onClose={() => handleCloseChat(user.id)}
+            index={index} // position from right
           />
         ))}
       </div>

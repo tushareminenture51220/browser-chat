@@ -3,16 +3,15 @@ import React, { useState, useEffect, useRef } from "react";
 import { Icon } from "@iconify/react";
 import "./BrowserChatWindow.css";
 
-const BrowserChatWindow = ({ chatUser, onClose }) => {
+const BrowserChatWindow = ({ chatUser, onClose, index }) => {
   const [messages, setMessages] = useState([
     { id: 1, sender: "self", text: "Hi there!" },
     { id: 2, sender: "user", text: `Hello! I'm ${chatUser.name}` },
   ]);
+  
   const [newMessage, setNewMessage] = useState("");
-
   const messagesEndRef = useRef(null);
 
-  // Auto-scroll to bottom on new message
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
@@ -28,8 +27,11 @@ const BrowserChatWindow = ({ chatUser, onClose }) => {
     setNewMessage("");
   };
 
+  // Calculate right offset based on index
+  const rightOffset = 320 + 16 + index * (320 + 16); 
+
   return (
-    <div className="chat-window">
+     <div className="chat-window" style={{ right: `${rightOffset}px` }}>
       {/* Header */}
       <div className="chat-header">
         <div className="chat-user-info">

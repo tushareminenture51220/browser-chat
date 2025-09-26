@@ -6,28 +6,27 @@
 }
 
 .chat-window {
-  width: 20rem;
+  width: 320px;
   height: 80vh;
+  position: fixed;
+  bottom: 0;
+  z-index: 50;
   background: #fff;
-  border-left: 1px solid #e5e7eb;
   border-radius: 1rem 1rem 0.75rem 0.75rem;
   box-shadow: 0 -8px 20px rgba(0, 0, 0, 0.1);
+
   display: flex;
-  flex-direction: column;
-  font-family: sans-serif;
-  position: relative;
-  z-index: 50;
-  margin-top: 24px;
-  margin-left: 10px
+  flex-direction: column; /* Stack header, messages, input vertically */
+  overflow: hidden;
 }
 
 /* Header */
 .chat-header {
-  position: relative;
   padding: 1rem;
   border-bottom: 1px solid #e5e7eb;
   display: flex;
   align-items: center;
+  flex-shrink: 0; /* Prevent shrinking */
 }
 
 .chat-user-info {
@@ -83,12 +82,24 @@
 
 /* Messages */
 .chat-messages {
-  flex: 1;
+  flex: 1; /* Take remaining space */
   padding: 0.75rem;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+}
+
+/* Scrollbar styling (optional, professional) */
+.chat-messages::-webkit-scrollbar {
+  width: 6px;
+}
+.chat-messages::-webkit-scrollbar-thumb {
+  background: rgba(107, 114, 128, 0.4);
+  border-radius: 3px;
+}
+.chat-messages::-webkit-scrollbar-thumb:hover {
+  background: rgba(107, 114, 128, 0.6);
 }
 
 .chat-message-row {
@@ -107,6 +118,7 @@
   font-size: 0.875rem;
   max-width: 70%;
   line-height: 1.3;
+  word-wrap: break-word;
 }
 .self-bubble {
   background: #3b82f6;
@@ -117,20 +129,22 @@
   color: #1f2937;
 }
 
-/* Input */
+/* Input area */
 .chat-input-area {
   padding: 0.5rem 0.75rem;
   border-top: 1px solid #e5e7eb;
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  flex-shrink: 0; /* Prevent shrinking */
   background: #fff;
 }
 
+/* Left icons */
 .chat-left-icons {
   display: flex;
   align-items: center;
-  gap: 2px; /* Reduced gap */
+  gap: 2px;
 }
 
 .chat-icon-btn {
@@ -147,17 +161,18 @@
   color: #374151;
 }
 
+/* Textarea */
 .chat-textarea {
   flex: 1;
   padding: 0.5rem 0.75rem;
   border: 1px solid #d1d5db;
-  border-radius: 1.5rem; /* Rounded input like WhatsApp */
+  border-radius: 1.5rem;
   font-size: 0.875rem;
   resize: none;
   overflow-y: auto;
   color: #1f2937;
   line-height: 1.4;
-  min-height: 12px; /* prevents shrinking */
+  min-height: 12px;
   max-height: 100px;
 }
 .chat-textarea:focus {
@@ -165,18 +180,17 @@
   border-color: #3b82f6;
   box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
 }
-/* Send Icon */
+
+/* Send icon */
 .chat-icon {
-  color: #3b82f6; /* Blue */
+  color: #3b82f6;
   cursor: pointer;
   transition: all 0.2s ease;
-  margin-left: auto; /* pushes it to the far right */
   display: flex;
   align-items: center;
   justify-content: center;
 }
-
 .chat-icon:hover {
-  color: #2563eb; /* Darker blue on hover */
-  transform: scale(1.1); /* Slight pop effect */
+  color: #2563eb;
+  transform: scale(1.1);
 }
