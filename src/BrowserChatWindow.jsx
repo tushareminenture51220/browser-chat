@@ -14,7 +14,6 @@ import "./image.css";
 import "./send.css";
 import BrowserChatFrom from "./components/bubble/BrowserChatFrom";
 import BrowserChatBubble from "./components/bubble/BrowserChatBubble";
-import callImage from "../src/Images/callImage.jpg";
 
 const BrowserChatWindow = ({ chatUser, onClose, index }) => {
   const dispatch = useDispatch();
@@ -272,16 +271,7 @@ const BrowserChatWindow = ({ chatUser, onClose, index }) => {
   const rightOffset = 320 + 16 + index * (320 + 16);
 
   return (
-    <div
-      className="chat-window"
-      style={{
-        right: `${rightOffset}px`,
-        backgroundImage: `url(${callImage})`,
-        backgroundSize: "cover", // cover the entire area
-        backgroundPosition: "center", // center the image
-        backgroundRepeat: "no-repeat", // don't repeat
-      }}
-    >
+    <div className="chat-window" style={{ right: `${rightOffset}px` }}>
       {/* Header */}
       <div className="chat-header">
         <div className="chat-user-info">
@@ -304,7 +294,7 @@ const BrowserChatWindow = ({ chatUser, onClose, index }) => {
 
           <div>
             <h2 className="chat-username">{chatUser.name}</h2>
-            {/* <p className="chat-status">{userIsOnline ? "Online" : "Offline"}</p> */}
+            <p className="chat-status">{userIsOnline ? "Online" : "Offline"}</p>
           </div>
         </div>
 
@@ -326,15 +316,7 @@ const BrowserChatWindow = ({ chatUser, onClose, index }) => {
       </div>
 
       {/* Input */}
-      <div
-        className="chat-input-area"
-        style={{
-          backgroundImage: `url(${callImage})`,
-          backgroundSize: "cover", // cover the entire area
-          backgroundPosition: "center", // center the image
-          backgroundRepeat: "no-repeat", // don't repeat
-        }}
-      >
+      <div className="chat-input-area">
         <div className="chat-left-icons">
           {/* Emoji button */}
           <button

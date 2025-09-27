@@ -141,15 +141,17 @@
   background: transparent;
   border: none;
   cursor: pointer;
-  color: #ffffff;
+  color: #374151; /* same as hover color */
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 4px;
 }
+
 .chat-icon-btn:hover {
-  color: #374151;
+  color: #1f2937; /* slightly darker shade for hover */
 }
+
 
 /* Textarea */
 .chat-textarea {
