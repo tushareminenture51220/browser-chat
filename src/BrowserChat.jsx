@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import UserSection from "./UserSection";
 import GroupSection from "./GroupSection";
 import BrowserChatWindow from "./BrowserChatWindow";
+import callImage from "../src/Images/callImage.jpg";
 import "./BrowserChat.css";
 import "./image.css";
 import "./search.css";
@@ -32,8 +33,10 @@ const BrowserChat = ({ onClose: externalOnClose }) => {
   };
 
   return (
-    <div className="chat-wrapper">
-      <div className="chat-sidebar">
+    <div
+      className="chat-wrapper"
+    >
+      <div className="chat-sidebar" >
         {/* Close button */}
         <button
           onClick={() => {
@@ -58,7 +61,7 @@ const BrowserChat = ({ onClose: externalOnClose }) => {
             />
           </div>
           <div>
-            <h2 className="chat-username">
+            <h2 className="chat-username-parent">
               {loggedInUser?.first_name || "Tushar"}
             </h2>
             <p className="chat-status">Available</p>
