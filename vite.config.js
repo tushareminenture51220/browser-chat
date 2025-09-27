@@ -6,9 +6,16 @@ export default defineConfig({
   plugins: [
     react({
       // Use classic runtime for UMD build
-      jsxRuntime: "classic"
-    })
+      jsxRuntime: "classic",
+    }),
   ],
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "src"), // now "@/..." points to src
+      "@context": path.resolve(__dirname, "src/context"), // shortcut for context
+      "@components": path.resolve(__dirname, "src/components"), // optional
+    },
+  },
   build: {
     lib: {
       entry: path.resolve(__dirname, "src/main.jsx"),

@@ -1,11 +1,23 @@
 // ChatWidget.jsx
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import BrowserChat from "./BrowserChat";
 import { Icon } from "@iconify/react";
 import "./ChatWidget.css";
+import { useDispatch, useSelector } from "react-redux";
+import { getUsersData } from "../redux/users/action";
+import { getGroupsData } from "../redux/getGroupsData/action";
 
 const ChatWidget = () => {
+  const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
+  const { usersData, loggedInUser } = useSelector((store) => store.usersData);
+  const { groupData } = useSelector((store) => store.groupsDataStore);
+  // console.log("loggedInUser", loggedInUser)
+
+  useEffect(() => {
+    dispatch(getUsersData());
+    dispatch(getGroupsData());
+  }, [dispatch]);
 
   return (
     <>
@@ -21,7 +33,11 @@ const ChatWidget = () => {
       )}
 
       {/* Browser Chat Sidebar */}
-      {open && <BrowserChat onClose={() => setOpen(false)} />}
+      {open && (
+        <BrowserChat
+          onClose={() => setOpen(false)}
+        />
+      )}
     </>
   );
 };
