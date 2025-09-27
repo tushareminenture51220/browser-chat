@@ -5,14 +5,15 @@ import { Icon } from "@iconify/react";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { useSelector, useDispatch } from "react-redux";
-import "./BrowserChatWindow.css";
-import "./image.css";
 import { useSocket } from "../context/SocketContext";
 import BrowserChatBubble from "./components/BrowserChatBubble";
 import BrowserChatFrom from "./components/BrowserChatFrom";
 import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
 import { getUsersData } from "../redux/users/action";
+import "./BrowserChatWindow.css";
+import "./image.css";
+import "./send.css";
 
 const BrowserChatWindow = ({ chatUser, onClose, index }) => {
   const dispatch = useDispatch();
@@ -360,9 +361,8 @@ const BrowserChatWindow = ({ chatUser, onClose, index }) => {
           }}
         />
 
-        {/* Send button */}
-        <button onClick={handleSend}>
-          <Icon className="chat-icon" icon="mdi:send" width={20} height={20} />
+        <button className="chat-icon" onClick={handleSend}>
+          <Icon icon="mdi:send" />
         </button>
       </div>
 

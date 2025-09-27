@@ -1,0 +1,17 @@
+/* Small Modern Glass + Gradient Send Button */
+.chat-icon {
+  width: 30px;                 /* smaller size */
+  height: 30px;
+  border-radius: 50%;           /* perfect circle */
+  background: linear-gradient(145deg, #4f46e5, #3b82f6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 18px;             /* smaller icon */
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 10px rgba(59, 130, 246, 0.4); /* softer shadow */
+  backdrop-filter: blur(4px);  /* glass effect */
+  border: none;                 /* remove any black/solid border */
+}

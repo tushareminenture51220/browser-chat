@@ -169,20 +169,6 @@
   box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
 }
 
-/* Send icon */
-.chat-icon {
-  color: #3b82f6;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.chat-icon:hover {
-  color: #2563eb;
-  transform: scale(1.1);
-}
-
 
 /* Completely hide the file input but keep it functional */
 .file-input-hidden {
