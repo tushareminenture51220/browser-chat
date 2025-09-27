@@ -58,13 +58,15 @@ const BrowserChat = ({ onClose: externalOnClose }) => {
             />
           </div>
           <div>
-            <h2 className="chat-username">{loggedInUser?.first_name || "Tushar"}</h2>
+            <h2 className="chat-username">
+              {loggedInUser?.first_name || "Tushar"}
+            </h2>
             <p className="chat-status">Available</p>
           </div>
         </div>
 
-        {/* Search */}
         <div className="chat-search">
+          <Icon icon="mdi:magnify" className="chat-search-icon" />
           <input
             type="text"
             placeholder="Search People and Groups"

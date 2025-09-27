@@ -1,13 +1,26 @@
-
 .chat-search {
+  position: relative;
   padding: 12px 15px;
   border-bottom: 1px solid #e0e0e0;
   background: #fafafa;
 }
 
+/* Magnifying icon inside input */
+.chat-search-icon {
+  position: absolute;
+  top: 50%;
+  left: 22px;                  /* reduced gap from left edge */
+  transform: translateY(-50%);
+  color: #333;                /* darker icon */
+  width: 18px;
+  height: 18px;
+  pointer-events: none;       /* so clicks go through to input */
+  z-index: 10;
+}
+
 .chat-search input {
   width: 100%;
-  padding: 10px 15px;
+  padding: 10px 15px 10px 32px; /* reduce left padding to decrease gap */
   font-size: 14px;
   border: none;
   border-radius: 25px;
@@ -33,16 +46,4 @@
 .chat-search input:focus::placeholder {
   color: #4f46e5;
   opacity: 0.7;
-}
-
-.chat-search {
-  position: relative;
-}
-
-.chat-search input {
-  padding-left: 25px;
-}
-
-.chat-search input:focus + ::before {
-  color: #4f46e5;
 }
