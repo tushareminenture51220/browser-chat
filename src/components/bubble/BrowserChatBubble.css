@@ -78,9 +78,10 @@
   margin-left: 6px;       /* slight left indent */
   transition: color 0.2s ease;
 }
-
 .chat-bubble-row.user .chat-timestamp {
-  color: #4b5563;          /* dark gray for sent */
-  align-self: flex-end;    /* align with right bubble edge */
-  margin-right: 6px;       /* slight right indent */
+  align-self: flex-start; /* align left */
+  margin-left: 0;         /* remove right indent */
+  margin-right: auto;     /* optional, keeps it flush left */
+  color: #4b5563;         /* dark gray for sent */
 }
+

@@ -72,3 +72,19 @@
   font-style: italic;
   color: rgba(156, 163, 175, 0.9);
 }
+
+/* Timestamp OUTSIDE bubble for all messages */
+.chat-timestamp {
+  font-size: 0.7rem;
+  color: #9ca3af;
+  margin-top: 0.15rem; /* slightly below bubble */
+  line-height: 1rem;
+  transition: color 0.2s ease;
+}
+
+/* Timestamp for sent messages (.self) */
+.chat-bubble-row.self .chat-timestamp {
+  align-self: flex-end; /* move to the right */
+  margin-left: auto;    /* push it to the far right */
+  margin-right: 0;      /* remove extra right margin */
+}
