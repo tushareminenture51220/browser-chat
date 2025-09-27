@@ -76,11 +76,11 @@ const BrowserChatBubble = ({ msg }) => {
         </div>
       )}
 
-      <p className={`chat-message-text ${is_deleted ? "deleted" : ""}`}>
+      <span className={`chat-message-text ${is_deleted ? "deleted" : ""}`}>
         {is_deleted
           ? "This message was deleted"
           : renderMessageWithMentions(message_text, usersData)}
-      </p>
+      </span>
     </div>
 
     {/* ⬇️ timestamp OUTSIDE bubble */}

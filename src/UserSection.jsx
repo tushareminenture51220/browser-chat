@@ -1,10 +1,10 @@
-// src/UserSection.jsx
 import React from "react";
 import { useSelector } from "react-redux";
+import "./image.css"
 
 const UserSection = ({ searchTerm, handleOpenChat }) => {
-  const { usersData, loggedInUser } = useSelector((store) => store.usersData);
-  // console.log("usersData", usersData);
+  const { usersData } = useSelector((store) => store.usersData);
+
   const filteredUsers = usersData.filter(
     (user) =>
       user.first_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -29,8 +29,16 @@ const UserSection = ({ searchTerm, handleOpenChat }) => {
             })
           }
         >
-          <div className="chat-list-avatar">
-            {user.first_name ? user.first_name[0].toUpperCase() : "U"}
+          <div className="chat-avatar">
+            {user.user_profile ? (
+              <img
+                src={`https://eminenture.live/public/chatting-files/${user.user_profile}`}
+                alt={user.first_name}
+                className="w-full h-full object-cover rounded-full"
+              />
+            ) : (
+              <span>{user.first_name ? user.first_name[0].toUpperCase() : "U"}</span>
+            )}
           </div>
           <div className="chat-list-details">
             <div className="chat-list-header">

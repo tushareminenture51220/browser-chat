@@ -1,9 +1,10 @@
 import React from "react";
 import { useSelector } from "react-redux";
+import "./image.css";
 
 const GroupSection = ({ searchTerm, handleOpenChat }) => {
   const { groupData } = useSelector((store) => store.groupsDataStore);
-  // console.log("groupData", groupData)
+
   const filteredGroups = groupData.filter(
     (group) =>
       group.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -28,12 +29,22 @@ const GroupSection = ({ searchTerm, handleOpenChat }) => {
             })
           }
         >
-          <div className="chat-list-avatar">
-            {group.name
-              .split(" ")
-              .map((n) => n[0])
-              .join("")
-              .toUpperCase()}
+          <div className="chat-avatar">
+            {group.groupImage ? (
+              <img
+                src={`https://eminenture.live/public/chatting-files/${group.groupImage}`}
+                alt={group.name}
+                className="w-full h-full object-cover rounded-full"
+              />
+            ) : (
+              <span>
+                {group.name
+                  .split(" ")
+                  .map((n) => n[0])
+                  .join("")
+                  .toUpperCase()}
+              </span>
+            )}
           </div>
           <div className="chat-list-details">
             <div className="chat-list-header">

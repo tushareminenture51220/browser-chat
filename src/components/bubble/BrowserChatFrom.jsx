@@ -26,9 +26,9 @@ const BrowserChatFrom = ({ msg }) => {
   return (
     <div className="chat-bubble-row self">
       <div className="chat-bubble-container from" onClick={toggleShowTime}>
-        <p className={`chat-message-text ${is_deleted ? "deleted" : ""}`}>
+        <span className={`chat-message-text ${is_deleted ? "deleted" : ""}`}>
           {is_deleted ? "This message was deleted" : message_text}
-        </p>
+        </span>
       </div>
 
       {/* ⬇️ timestamp OUTSIDE bubble */}
