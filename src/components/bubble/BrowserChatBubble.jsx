@@ -4,7 +4,7 @@ import { PinIcon, CopyIcon, ArrowRight, Maximize2 } from "lucide-react";
 import { toast } from "react-toastify";
 import Cookies from "js-cookie";
 import { useSelector, useDispatch } from "react-redux";
-import useFormattedTime from "../../customHooks/useFormattedTime";
+import useFormattedTime from "../../../customHooks/useFormattedTime";
 import "./BrowserChatBubble.css";
 
 const BrowserChatBubble = ({ msg }) => {

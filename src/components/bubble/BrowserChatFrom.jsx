@@ -3,8 +3,8 @@
 import React, { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import { useSelector } from "react-redux";
-import useFormattedTime from "../../customHooks/useFormattedTime";
 import "./BrowserChatFrom.css";
+import useFormattedTime from "../../../customHooks/useFormattedTime";
 
 const BrowserChatFrom = ({ msg }) => {
   const { message_text, created_at, is_deleted } = msg;

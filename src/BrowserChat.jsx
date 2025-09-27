@@ -5,8 +5,8 @@ import { Icon } from "@iconify/react";
 import "./BrowserChat.css";
 import "./image.css";
 import { useSelector } from "react-redux";
-import UserSection from "./UserSection";
-import GroupSection from "./GroupSection";
+import UserSection from "./components/section/UserSection";
+import GroupSection from "./components/section/GroupSection";
 
 const BrowserChat = ({ onClose: externalOnClose }) => {
   const [searchTerm, setSearchTerm] = useState("");

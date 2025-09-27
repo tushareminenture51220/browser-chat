@@ -6,14 +6,14 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { useSelector, useDispatch } from "react-redux";
 import { useSocket } from "../context/SocketContext";
-import BrowserChatBubble from "./components/BrowserChatBubble";
-import BrowserChatFrom from "./components/BrowserChatFrom";
 import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
 import { getUsersData } from "../redux/users/action";
 import "./BrowserChatWindow.css";
 import "./image.css";
 import "./send.css";
+import BrowserChatFrom from "./components/bubble/BrowserChatFrom";
+import BrowserChatBubble from "./components/bubble/BrowserChatBubble";
 
 const BrowserChatWindow = ({ chatUser, onClose, index }) => {
   const dispatch = useDispatch();

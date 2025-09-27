@@ -177,14 +177,6 @@
   color: #2563eb;
 }
 
-/* .chat-windows {
-  display: flex;
-  margin-left: 700px;
-  gap: 3px;
-  height: 80vh;
-  margin-top: 104px;
-} */
-
 .chat-windows {
   position: relative;
   display: flex;
