@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 
 const GroupSection = ({ searchTerm, handleOpenChat }) => {
   const { groupData } = useSelector((store) => store.groupsDataStore);
+  // console.log("groupData", groupData)
   const filteredGroups = groupData.filter(
     (group) =>
       group.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -23,6 +24,7 @@ const GroupSection = ({ searchTerm, handleOpenChat }) => {
               time: group.createdAt || "",
               unread: false,
               type: "group",
+              image: group.groupImage || "",
             })
           }
         >

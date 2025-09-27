@@ -5,16 +5,11 @@ import { toast } from "react-toastify";
 import Cookies from "js-cookie";
 import { useSelector, useDispatch } from "react-redux";
 import useFormattedTime from "../../customHooks/useFormattedTime";
-import "./BrowserChatBubble.css"
+import "./BrowserChatBubble.css";
 
 const BrowserChatBubble = ({ msg }) => {
-  const {
-    message_text,
-    created_at,
-    is_forwarded,
-    forwarded_by,
-    is_deleted,
-  } = msg;
+  const { message_text, created_at, is_forwarded, forwarded_by, is_deleted } =
+    msg;
 
   const [showTime, setShowTime] = useState(false);
   const [LoggedInUser, setLoggedInUser] = useState(null);
@@ -71,26 +66,28 @@ const BrowserChatBubble = ({ msg }) => {
     return rendered;
   };
 
-  return (
-    <div className="chat-bubble-row user">
-      <div className="chat-bubble-container" onClick={toggleShowTime}>
-        {is_forwarded === 1 && (
-          <div className="chat-forwarded">
-            <ArrowRight size={14} />
-            Forwarded {forwardedUser ? `by ${forwardedUser.first_name}` : ""}
-          </div>
-        )}
+ return (
+  <div className="chat-bubble-row user">
+    <div className="chat-bubble-container" onClick={toggleShowTime}>
+      {is_forwarded === 1 && (
+        <div className="chat-forwarded">
+          <ArrowRight size={14} />
+          Forwarded {forwardedUser ? `by ${forwardedUser.first_name}` : ""}
+        </div>
+      )}
 
-        <p className={`chat-message-text ${is_deleted ? "deleted" : ""}`}>
-          {is_deleted
-            ? "This message was deleted"
-            : renderMessageWithMentions(message_text, usersData)}
-        </p>
-      </div>
-
-      {showTime && <div className="chat-timestamp">{formattedTime}</div>}
+      <p className={`chat-message-text ${is_deleted ? "deleted" : ""}`}>
+        {is_deleted
+          ? "This message was deleted"
+          : renderMessageWithMentions(message_text, usersData)}
+      </p>
     </div>
-  );
+
+    {/* ⬇️ timestamp OUTSIDE bubble */}
+    {showTime && <div className="chat-timestamp">{formattedTime}</div>}
+  </div>
+);
+
 };
 
 export default BrowserChatBubble;

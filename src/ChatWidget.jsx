@@ -10,9 +10,6 @@ import { getGroupsData } from "../redux/getGroupsData/action";
 const ChatWidget = () => {
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
-  const { usersData, loggedInUser } = useSelector((store) => store.usersData);
-  const { groupData } = useSelector((store) => store.groupsDataStore);
-  // console.log("loggedInUser", loggedInUser)
 
   useEffect(() => {
     dispatch(getUsersData());

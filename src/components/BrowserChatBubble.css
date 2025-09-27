@@ -1,34 +1,63 @@
-/* Main chat bubble container */
+/* Each chat bubble row wrapper */
+.chat-bubble-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* default for received */
+  margin-bottom: 0.75rem; /* space between messages */
+}
+
+/* Sent message row aligned to right */
+.chat-bubble-row.user {
+  align-items: flex-end;
+}
+
+/* Main chat bubble container (received messages) */
 .chat-bubble-container {
   position: relative;
   display: inline-flex;
   flex-direction: column;
   max-width: 325px;
-  background-color: #f3f4f6; /* gray-100 */
+  background: linear-gradient(135deg, #f9fafb, #f3f4f6); /* subtle gradient */
   border: 1px solid #e5e7eb;
-  border-radius: 1rem 1rem 1rem 0.25rem; /* rounded-2xl rounded-tl-none */
-  padding: 0.5rem 0.75rem; /* reduce vertical padding to decrease height */
+  border-radius: 1rem 1rem 1rem 0.25rem; /* rounded corners */
+  padding: 0.5rem 0.75rem;
   font-size: 0.875rem;
-  cursor: pointer;
+  line-height: 1.25rem;
   word-wrap: break-word;
-  line-height: 1.25rem; /* unify line height */
-  min-height: 2rem; /* optional: minimum height for small messages */
+  cursor: pointer;
+  min-height: 2rem;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.chat-bubble-container:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+  background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
 }
 
 /* Self messages (sent) */
 .chat-bubble-container.from {
-  background-color: #0ea5e9; /* blue-500 */
+  background: linear-gradient(135deg, #0ea5e9, #0284c7); /* gradient blue */
   color: white;
   border-radius: 1rem 1rem 0.25rem 1rem;
-  padding: 0.5rem 0.75rem; /* same as above */
+  padding: 0.5rem 0.75rem;
   max-width: 325px;
   font-size: 0.875rem;
   line-height: 1.25rem;
   word-wrap: break-word;
   cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
 }
 
-/* Ensure text inside bubble is proper color */
+.chat-bubble-container.from:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  background: linear-gradient(135deg, #0284c7, #0369a1);
+}
+
+/* Ensure text inside sent bubble is proper color */
 .chat-bubble-container.from .chat-message-text {
   color: white;
 }
@@ -37,5 +66,36 @@
 .chat-bubble-container .chat-message-text.deleted,
 .chat-bubble-container.from .chat-message-text.deleted {
   font-style: italic;
-  color: rgba(156, 163, 175, 0.9); /* slightly lighter for both */
+  color: rgba(156, 163, 175, 0.9);
+}
+
+/* Forwarded label */
+.chat-forwarded {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+  color: #6b7280; /* gray-500 */
+  margin-bottom: 0.25rem;
+}
+
+.chat-bubble-container.from .chat-forwarded {
+  color: rgba(255, 255, 255, 0.8); /* lighter for blue bubble */
+}
+
+/* Timestamp OUTSIDE bubble */
+.chat-timestamp {
+  font-size: 0.7rem;
+  color: #9ca3af;         /* gray-400 */
+  margin-top: 0.15rem;    /* slightly below bubble */
+  line-height: 1rem;
+  align-self: flex-start; /* align with bubble edge */
+  margin-left: 6px;       /* slight left indent */
+  transition: color 0.2s ease;
+}
+
+.chat-bubble-row.user .chat-timestamp {
+  color: #4b5563;          /* dark gray for sent */
+  align-self: flex-end;    /* align with right bubble edge */
+  margin-right: 6px;       /* slight right indent */
 }

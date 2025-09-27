@@ -6,6 +6,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { useSelector, useDispatch } from "react-redux";
 import "./BrowserChatWindow.css";
+import "./image.css";
 import { useSocket } from "../context/SocketContext";
 import BrowserChatBubble from "./components/BrowserChatBubble";
 import BrowserChatFrom from "./components/BrowserChatFrom";
@@ -112,7 +113,7 @@ const BrowserChatWindow = ({ chatUser, onClose, index }) => {
   // ✅ Receive group msg
   useEffect(() => {
     if (!LoggedInUser || !socket.current) return;
-    
+
     const handleGroupMsg = (data) => {
       if (
         chatUser?.type === "group" &&
@@ -274,12 +275,22 @@ const BrowserChatWindow = ({ chatUser, onClose, index }) => {
       <div className="chat-header">
         <div className="chat-user-info">
           <div className="chat-avatar">
-            {chatUser.name
-              .split(" ")
-              .map((n) => n[0])
-              .join("")
-              .toUpperCase()}
+            {chatUser.image ? (
+              <img
+                src={`https://eminenture.live/public/chatting-files/${chatUser.image}`}
+                alt={chatUser.name}
+              />
+            ) : (
+              <span>
+                {chatUser.name
+                  .split(" ")
+                  .map((n) => n[0])
+                  .join("")
+                  .toUpperCase()}
+              </span>
+            )}
           </div>
+
           <div>
             <h2 className="chat-username">{chatUser.name}</h2>
             <p className="chat-status">{userIsOnline ? "Online" : "Offline"}</p>
@@ -378,17 +389,20 @@ const BrowserChatWindow = ({ chatUser, onClose, index }) => {
               className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg"
               onClick={() => selectUser(user)}
             >
-              {user.avatar ? (
-                <img
-                  src={user.avatar}
-                  alt={user.first_name}
-                  className="w-10 h-10 rounded-full object-cover"
-                />
-              ) : (
-                <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white font-medium">
-                  {user.first_name[0]}
-                </div>
-              )}
+              <div className="w-10 h-10 rounded-full overflow-hidden flex items-center justify-center">
+                {user.avatar ? (
+                  <img
+                    src={user.avatar}
+                    alt={user.first_name}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white font-medium">
+                    {user.first_name[0]}
+                  </div>
+                )}
+              </div>
+
               <div className="flex flex-col min-w-0 flex-1">
                 <span className="text-gray-900 dark:text-white text-sm truncate">
                   {user.first_name} {user.last_name}

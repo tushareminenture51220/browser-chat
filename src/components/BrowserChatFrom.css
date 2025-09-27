@@ -3,9 +3,9 @@
   display: flex;
   justify-content: flex-end;
   align-items: flex-start;
-  gap: 0.5rem; /* smaller gap */
+  gap: 0.5rem;
   width: fit-content;
-  margin-left: auto; /* push to right */
+  margin-left: auto;
 }
 
 /* Row container for received messages */
@@ -13,7 +13,7 @@
   display: flex;
   justify-content: flex-start;
   align-items: flex-start;
-  gap: 0.5rem; /* same as self */
+  gap: 0.5rem;
   width: fit-content;
 }
 
@@ -23,26 +23,42 @@
   display: inline-flex;
   flex-direction: column;
   max-width: 325px;
-  background-color: #f3f4f6; /* gray-100 */
+  background: linear-gradient(135deg, #f9fafb, #f3f4f6); /* soft gradient */
   border: 1px solid #e5e7eb;
   border-radius: 1rem 1rem 1rem 0.25rem;
-  padding: 0.4rem 0.6rem; /* reduced padding for compact height */
-  font-size: 0.85rem; /* slightly smaller font */
-  line-height: 1.2rem; /* smaller line height */
+  padding: 0.4rem 0.6rem;
+  font-size: 0.85rem;
+  line-height: 1.2rem;
   word-wrap: break-word;
   cursor: pointer;
-  min-height: 1.8rem; /* ensure small messages don’t collapse */
+  min-height: 1.8rem;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.chat-bubble-container:hover {
+  background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
 }
 
 /* Sent messages */
 .chat-bubble-container.from {
-  background-color: #0ea5e9; /* blue-500 */
+  background: linear-gradient(135deg, #6b7280, #4b5563);
   color: white;
   border-radius: 1rem 1rem 0.25rem 1rem;
-  padding: 0.4rem 0.6rem; /* same compact padding */
+  padding: 0.4rem 0.6rem;
   font-size: 0.85rem;
   line-height: 1.2rem;
-  min-height: 1.8rem; /* same min-height as received */
+  min-height: 1.8rem;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+}
+
+.chat-bubble-container.from:hover {
+  background: linear-gradient(135deg, #4b5563, #374151);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 /* Ensure normal text inside sent bubble is white */

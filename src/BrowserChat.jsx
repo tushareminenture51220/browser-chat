@@ -3,21 +3,21 @@ import React, { useState } from "react";
 import BrowserChatWindow from "./BrowserChatWindow";
 import { Icon } from "@iconify/react";
 import "./BrowserChat.css";
+import "./image.css";
 import { useSelector } from "react-redux";
 import UserSection from "./UserSection";
 import GroupSection from "./GroupSection";
 
-const BrowserChat = ({ onClose: externalOnClose, initialUser }) => {
+const BrowserChat = ({ onClose: externalOnClose }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [openChats, setOpenChats] = useState([]);
   const [activeTab, setActiveTab] = useState("people");
 
   const { usersData, loggedInUser } = useSelector((store) => store.usersData);
-  // console.log("usersData", usersData);
-  // console.log("groupData", groupData);
+  // console.log("loggedInUser", loggedInUser);
 
   const handleOpenChat = (chat) => {
-    console.log("chat", chat)
+    // console.log("chat", chat)
     setOpenChats((prev) => {
       const exists = prev.find((c) => c.id === chat.id);
       if (exists) return prev;
@@ -44,13 +44,20 @@ const BrowserChat = ({ onClose: externalOnClose, initialUser }) => {
           <Icon icon="ic:round-close" className="chat-close-icon" />
         </button>
 
-        {/* Current User */}
         <div className="chat-current-user">
           <div className="chat-avatar">
-            {initialUser ? initialUser[0].toUpperCase() : "T"}
+            <img
+              src={
+                loggedInUser?.image
+                  ? `https://eminenture.live/public/chatting-files/${loggedInUser.image}`
+                  : "/default-user.png"
+              }
+              alt={loggedInUser?.first_name || "User"}
+              className="w-12 h-12 rounded-full object-cover"
+            />
           </div>
           <div>
-            <h2 className="chat-username">{initialUser || "tushar1968"}</h2>
+            <h2 className="chat-username">{loggedInUser?.first_name || "Tushar"}</h2>
             <p className="chat-status">Available</p>
           </div>
         </div>

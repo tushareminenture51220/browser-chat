@@ -3,7 +3,8 @@ import React from "react";
 import { useSelector } from "react-redux";
 
 const UserSection = ({ searchTerm, handleOpenChat }) => {
-const { usersData, loggedInUser } = useSelector((store) => store.usersData);
+  const { usersData, loggedInUser } = useSelector((store) => store.usersData);
+  // console.log("usersData", usersData);
   const filteredUsers = usersData.filter(
     (user) =>
       user.first_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -24,6 +25,7 @@ const { usersData, loggedInUser } = useSelector((store) => store.usersData);
               time: "",
               unread: false,
               type: "user",
+              image: user.user_profile || "",
             })
           }
         >
