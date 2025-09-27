@@ -74,20 +74,6 @@
   margin: 2px 0 0 0;
 }
 
-.chat-search {
-  padding: 10px;
-  border-bottom: 1px solid #eee;
-}
-.chat-search input {
-  width: calc(100% - 20px); /* subtracting sidebar padding */
-  padding: 7px 10px;
-  font-size: 14px;
-  border: 1px solid #c6cdd3;
-  border-radius: 6px;
-  outline: none;
-  box-sizing: border-box; /* ensures padding is included in width */
-}
-
 
 .chat-list {
   flex: 1;

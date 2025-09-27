@@ -7,6 +7,7 @@ import GroupSection from "./GroupSection";
 import BrowserChatWindow from "./BrowserChatWindow";
 import "./BrowserChat.css";
 import "./image.css";
+import "./search.css";
 
 const BrowserChat = ({ onClose: externalOnClose }) => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -66,7 +67,7 @@ const BrowserChat = ({ onClose: externalOnClose }) => {
         <div className="chat-search">
           <input
             type="text"
-            placeholder="Search Contacts, Chats & Channels"
+            placeholder="Search People and Groups"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
