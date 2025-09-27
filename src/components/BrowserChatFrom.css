@@ -1,0 +1,58 @@
+/* Row container for self messages */
+.chat-bubble-row.self {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+  gap: 0.5rem; /* smaller gap */
+  width: fit-content;
+  margin-left: auto; /* push to right */
+}
+
+/* Row container for received messages */
+.chat-bubble-row.user {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 0.5rem; /* same as self */
+  width: fit-content;
+}
+
+/* Main chat bubble container (received messages) */
+.chat-bubble-container {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  max-width: 325px;
+  background-color: #f3f4f6; /* gray-100 */
+  border: 1px solid #e5e7eb;
+  border-radius: 1rem 1rem 1rem 0.25rem;
+  padding: 0.4rem 0.6rem; /* reduced padding for compact height */
+  font-size: 0.85rem; /* slightly smaller font */
+  line-height: 1.2rem; /* smaller line height */
+  word-wrap: break-word;
+  cursor: pointer;
+  min-height: 1.8rem; /* ensure small messages don’t collapse */
+}
+
+/* Sent messages */
+.chat-bubble-container.from {
+  background-color: #0ea5e9; /* blue-500 */
+  color: white;
+  border-radius: 1rem 1rem 0.25rem 1rem;
+  padding: 0.4rem 0.6rem; /* same compact padding */
+  font-size: 0.85rem;
+  line-height: 1.2rem;
+  min-height: 1.8rem; /* same min-height as received */
+}
+
+/* Ensure normal text inside sent bubble is white */
+.chat-bubble-container.from .chat-message-text {
+  color: white;
+}
+
+/* Deleted messages */
+.chat-bubble-container .chat-message-text.deleted,
+.chat-bubble-container.from .chat-message-text.deleted {
+  font-style: italic;
+  color: rgba(156, 163, 175, 0.9);
+}

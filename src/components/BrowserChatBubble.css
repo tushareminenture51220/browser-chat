@@ -1,0 +1,41 @@
+/* Main chat bubble container */
+.chat-bubble-container {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  max-width: 325px;
+  background-color: #f3f4f6; /* gray-100 */
+  border: 1px solid #e5e7eb;
+  border-radius: 1rem 1rem 1rem 0.25rem; /* rounded-2xl rounded-tl-none */
+  padding: 0.5rem 0.75rem; /* reduce vertical padding to decrease height */
+  font-size: 0.875rem;
+  cursor: pointer;
+  word-wrap: break-word;
+  line-height: 1.25rem; /* unify line height */
+  min-height: 2rem; /* optional: minimum height for small messages */
+}
+
+/* Self messages (sent) */
+.chat-bubble-container.from {
+  background-color: #0ea5e9; /* blue-500 */
+  color: white;
+  border-radius: 1rem 1rem 0.25rem 1rem;
+  padding: 0.5rem 0.75rem; /* same as above */
+  max-width: 325px;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  word-wrap: break-word;
+  cursor: pointer;
+}
+
+/* Ensure text inside bubble is proper color */
+.chat-bubble-container.from .chat-message-text {
+  color: white;
+}
+
+/* Deleted messages */
+.chat-bubble-container .chat-message-text.deleted,
+.chat-bubble-container.from .chat-message-text.deleted {
+  font-style: italic;
+  color: rgba(156, 163, 175, 0.9); /* slightly lighter for both */
+}
