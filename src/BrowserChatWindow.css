@@ -194,3 +194,9 @@
   color: #2563eb;
   transform: scale(1.1);
 }
+
+
+/* Completely hide the file input but keep it functional */
+.file-input-hidden {
+  display: none;
+}

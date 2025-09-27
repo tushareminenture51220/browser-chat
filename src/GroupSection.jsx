@@ -22,6 +22,7 @@ const GroupSection = ({ searchTerm, handleOpenChat }) => {
               message: group.description || "",
               time: group.createdAt || "",
               unread: false,
+              type: "group",
             })
           }
         >

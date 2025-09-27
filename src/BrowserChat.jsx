@@ -17,6 +17,7 @@ const BrowserChat = ({ onClose: externalOnClose, initialUser }) => {
   // console.log("groupData", groupData);
 
   const handleOpenChat = (chat) => {
+    console.log("chat", chat)
     setOpenChats((prev) => {
       const exists = prev.find((c) => c.id === chat.id);
       if (exists) return prev;

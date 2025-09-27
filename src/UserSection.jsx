@@ -23,6 +23,7 @@ const { usersData, loggedInUser } = useSelector((store) => store.usersData);
               message: user.email || "",
               time: "",
               unread: false,
+              type: "user",
             })
           }
         >
