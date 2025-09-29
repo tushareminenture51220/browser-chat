@@ -47,6 +47,38 @@ const BrowserChatWindow = ({ chatUser, onClose, index }) => {
     dispatch(getUsersData());
   }, [dispatch]);
 
+  const [isOtherTyping, setIsOtherTyping] = useState(false);
+
+  useEffect(() => {
+    if (!socket.current) return;
+
+    const handleTyping = (data) => {
+      if (Number(data.sender_id) === Number(chatUser.id)) {
+        setIsOtherTyping(data.isTyping);
+      }
+    };
+
+    socket.current.on("typing", handleTyping);
+
+    return () => {
+      socket.current.off("typing", handleTyping);
+    };
+  }, [socket, chatUser.id]);
+
+  // Scroll to bottom or a little above when typing
+  useEffect(() => {
+    if (isOtherTyping) {
+      // Scroll slightly above bottom to show typing dots
+      if (messagesEndRef.current?.parentElement) {
+        const container = messagesEndRef.current.parentElement;
+        container.scrollTop = container.scrollHeight + 30; // adjust 30px up
+      }
+    } else {
+      // Normal scroll when typing stops
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [isOtherTyping]);
+
   // -------------------- Fetch chat messages --------------------
   useEffect(() => {
     const fetchMessages = async () => {
@@ -130,13 +162,15 @@ const BrowserChatWindow = ({ chatUser, onClose, index }) => {
   }, [socket.current, chatUser?.id, LoggedInUser?.id]);
 
   // -------------------- Mentions --------------------
+  const typingTimeoutRef = useRef(null);
+
   const handleTextChange = (e) => {
     const value = e.target.value;
     const cursorPos = e.target.selectionStart;
     setCursorPosition(cursorPos);
     setNewMessage(value);
 
-    // Detect @ and filter users
+    // ------------------- Mentions -------------------
     const lastAt = value.lastIndexOf("@", cursorPos - 1);
     if (lastAt >= 0) {
       const query = value.slice(lastAt + 1, cursorPos);
@@ -154,6 +188,29 @@ const BrowserChatWindow = ({ chatUser, onClose, index }) => {
       setMentionQuery("");
       setFilteredUsers([]);
     }
+
+    // ------------------- Emit typing event -------------------
+    if (socket.current) {
+      socket.current.emit("typing", {
+        sender_id: LoggedInUser.id,
+        receiver_id: chatUser.id,
+        isTyping: value.length > 0,
+      });
+    }
+
+    // Clear previous timeout
+    if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+
+    // Set new timeout to mark "stopped typing" after 1.5s
+    typingTimeoutRef.current = setTimeout(() => {
+      if (socket.current) {
+        socket.current.emit("typing", {
+          sender_id: LoggedInUser.id,
+          receiver_id: chatUser.id,
+          isTyping: false,
+        });
+      }
+    }, 1500);
   };
 
   const selectUser = (user) => {
@@ -311,6 +368,17 @@ const BrowserChatWindow = ({ chatUser, onClose, index }) => {
           ) : (
             <BrowserChatBubble key={msg.tempId || msg.id} msg={msg} />
           )
+        )}
+        {isOtherTyping && (
+          <div className="chat-bubble-row">
+            <div className="chat-bubble-container typing">
+              <div className="typing-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </div>
+          </div>
         )}
         <div ref={messagesEndRef}></div>
       </div>
