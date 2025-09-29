@@ -1,0 +1,229 @@
+/* Overlay */
+.popup-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  transition: opacity 0.3s ease;
+}
+.popup-overlay.hide {
+  opacity: 0;
+}
+.popup-overlay.show {
+  opacity: 1;
+}
+.popup-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+/* Container */
+.popup-container {
+  position: relative;
+  background: #fff;
+  border-radius: 1rem 0 1rem 0;
+  width: 100%;
+  max-width: 42rem;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  transform: scale(0.95) translateY(20px);
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+.popup-container.show {
+  transform: scale(1) translateY(0);
+  opacity: 1;
+}
+
+/* Header */
+.popup-header {
+  background: #1398dd;
+  color: white;
+  padding: 1.25rem;
+  border-bottom: 1px solid #0f7bb0;
+}
+.popup-header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.popup-header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.popup-header-icon {
+  padding: 0.5rem;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+}
+.popup-header-title {
+  font-size: 1.125rem;
+}
+.popup-header-title .bold {
+  font-weight: 600;
+}
+.popup-header-title .light {
+  font-weight: 300;
+}
+.popup-close-btn {
+  padding: 0.5rem;
+  border: none;
+  background: transparent;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.popup-close-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: rotate(90deg);
+}
+
+/* Preview */
+.popup-preview {
+  height: 24rem;
+  background: linear-gradient(135deg, #f9fafb, #f3f4f6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+}
+.preview-image-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+.preview-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+}
+.preview-file {
+  text-align: center;
+}
+.preview-file-icon {
+  font-size: 6rem;
+  margin-bottom: 1rem;
+}
+.preview-file-name {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #6b7280;
+}
+.preview-file-size {
+  font-size: 0.875rem;
+  color: #9ca3af;
+}
+
+/* Form */
+.popup-form {
+  padding: 1.25rem;
+  background: #f9fafb;
+  border-top: 1px solid #e5e7eb;
+}
+.progress-container {
+  margin-bottom: 1rem;
+}
+.progress-bar {
+  position: relative;
+  height: 0.75rem;
+  background: #dbeafe;
+  border-radius: 9999px;
+  overflow: hidden;
+}
+.progress-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 0.75rem;
+  background: #3b82f6;
+  border-radius: 9999px;
+  transition: width 0.5s ease;
+}
+.progress-glow {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 0.75rem;
+  width: 100%;
+  border-radius: 9999px;
+  opacity: 0.2;
+  background: linear-gradient(
+    90deg,
+    rgba(59, 130, 246, 0.5),
+    rgba(59, 130, 246, 0)
+  );
+}
+.progress-text {
+  font-size: 0.75rem;
+  text-align: right;
+  font-weight: 600;
+  color: #1d4ed8;
+  margin-top: 0.25rem;
+}
+
+/* Message input */
+.message-label {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.875rem;
+  color: #4b5563;
+  margin-bottom: 0.5rem;
+}
+.message-input-container {
+  display: flex;
+  gap: 0.75rem;
+}
+.message-input {
+  flex: 1;
+  padding: 0.75rem 1.25rem;
+  border: none;
+  border-radius: 0.75rem;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+.message-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px #3b82f6;
+}
+.send-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 0.75rem;
+  background: #1398dd;
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.send-btn:hover {
+  background: #1182c0;
+  box-shadow: 0 4px 12px rgba(17, 130, 192, 0.25);
+}
+.send-btn.disabled {
+  background: #9ca3af;
+  color: #e5e7eb;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* Icons */
+.icon {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+.icon-small {
+  width: 1.25rem;
+  height: 1.25rem;
+}

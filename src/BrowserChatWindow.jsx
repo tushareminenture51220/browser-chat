@@ -14,6 +14,7 @@ import "./image.css";
 import "./send.css";
 import BrowserChatFrom from "./components/bubble/BrowserChatFrom";
 import BrowserChatBubble from "./components/bubble/BrowserChatBubble";
+import FilePreviewPopup from "./components/file/FilePreviewPopup";
 
 const BrowserChatWindow = ({ chatUser, onClose, index }) => {
   const dispatch = useDispatch();
@@ -482,6 +483,24 @@ const BrowserChatWindow = ({ chatUser, onClose, index }) => {
             </div>
           ))}
         </div>
+      )}
+
+      {/* File Preview Popup */}
+      {showPreview && (
+        <FilePreviewPopup
+          key={fileResData.uniqueId}
+          attachment_file={fileResData?.file}
+          attachment_name={fileResData?.attachment_name}
+          attachment_size={fileResData?.attachment_size}
+          userName={chatUser.name}
+          dispatch={dispatch}
+          handleSubmit={handleSend}
+          setTextMessage={setNewMessage}
+          setShowPreview={setShowPreview}
+          chatId={chatUser.id}
+          setFileResData={setFileResData}
+          groupName={chatUser?.type === "group" ? chatUser.name : null}
+        />
       )}
     </div>
   );
