@@ -1,53 +1,51 @@
 /* ------------------------------
    File Preview Component Styles
-   Professional & User-Friendly
+   Modern, Professional & Realistic
 ---------------------------------*/
 
-/* Theme variables for easier maintenance */
+/* Theme variables */
 :root {
-  --bg-color: #f8fafc;        /* Base background */
-  --bg-hover: #f1f5f9;        /* Hover background */
-  --border-color: #e2e8f0;    /* Base border */
-  --border-hover: #cbd5e1;    /* Hover border */
-  --text-color: #1e293b;      /* Primary text */
-  --text-hover: #0369a1;      /* Hover text */
-  --text-muted: #64748b;      /* Secondary text */
-  --transition-speed: 0.2s;   /* Smooth transition */
-  --border-radius: 10px;      /* Rounded corners */
-  --gap: 8px;                 /* Spacing */
+  --bg-gradient: linear-gradient(145deg, #f9fafb, #f1f5f9); /* soft light gradient */
+  --content-bg: #ffffff;       /* Card background */
+  --border-color: #e5e7eb;     /* Light gray border */
+  --text-color: #111827;       /* Primary text (near black) */
+  --text-muted: #6b7280;       /* Secondary text (gray) */
+  --border-radius: 6px;       /* Rounded corners */
+  --gap: 8px;                  /* Spacing */
+  --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.08);
 }
 
-/* Container for the file preview */
+/* Container */
 .file-preview-wrapper {
   display: inline-flex;
   flex-direction: column;
-  background-color: var(--bg-color);
-  padding: 10px 12px;
+  background: var(--bg-gradient);
+  padding: 6px 12px;
   border-radius: var(--border-radius);
   border: 1px solid var(--border-color);
   max-width: 100%;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: var(--font-family);
   font-size: 0.875rem; /* 14px */
   line-height: 1.4;
-  transition: background-color var(--transition-speed) ease, 
-              border-color var(--transition-speed) ease, 
-              transform var(--transition-speed) ease;
-  cursor: pointer;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  box-sizing: border-box;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.2s ease;
 }
 
-/* Hover & Active states for better feedback */
-.file-preview-wrapper:hover {
-  background-color: var(--bg-hover);
-  border-color: var(--border-hover);
-  transform: translateY(-2px);
+/* Inner content (card feel inside the gradient container) */
+.file-preview-inner {
+  background: var(--content-bg);
+  border-radius: calc(var(--border-radius) - 2px);
+  padding: 10px 12px;
+  box-shadow: var(--shadow-md);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
-.file-preview-wrapper:active {
-  transform: scale(0.97);
-}
-
-/* Header section: icon + filename */
+/* Header: icon + filename */
 .file-preview-header {
   display: flex;
   align-items: center;
@@ -57,30 +55,20 @@
 
 /* File type icon */
 .file-preview-icon {
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   flex-shrink: 0;
-  opacity: 0.85;
-  transition: transform var(--transition-speed) ease;
+  opacity: 0.95;
 }
 
-.file-preview-wrapper:hover .file-preview-icon {
-  transform: scale(1.1);
-}
-
-/* Filename text */
+/* Filename */
 .file-preview-name {
   font-weight: 500;
   color: var(--text-color);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-size: 0.875rem; /* 14px */
-  transition: color var(--transition-speed) ease;
-}
-
-.file-preview-name:hover {
-  color: var(--text-hover);
+  font-size: 0.9rem;
 }
 
 /* Extra info (size, date, actions) */
@@ -89,21 +77,25 @@
   align-items: center;
   gap: 6px;
   margin-left: auto;
-  font-size: 0.75rem; /* 12px */
+  font-size: 0.8rem;
   color: var(--text-muted);
 }
 
-/* Optional: subtle divider for better structure */
+/* Divider */
 .file-preview-divider {
   height: 1px;
   background-color: var(--border-color);
-  margin: 6px 0 0 0;
+  margin: 4px 0;
   opacity: 0.5;
 }
 
-/* Dynamic responsiveness */
+/* Responsive adjustments */
 @media (max-width: 480px) {
   .file-preview-wrapper {
+    padding: 12px 14px;
+  }
+
+  .file-preview-inner {
     padding: 8px 10px;
   }
 
