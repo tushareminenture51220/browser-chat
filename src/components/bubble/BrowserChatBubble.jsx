@@ -6,17 +6,24 @@ import Cookies from "js-cookie";
 import { useSelector, useDispatch } from "react-redux";
 import useFormattedTime from "../../../customHooks/useFormattedTime";
 import "./BrowserChatBubble.css";
+import ImagePreview from "../filePreview/ImagePreview";
+import VideoPreview from "../filePreview/VideoPreview";
+import FilePreview from "../filePreview/FilePreview";
 
 const BrowserChatBubble = ({ msg }) => {
-  const { message_text, created_at, is_forwarded, forwarded_by, is_deleted } =
-    msg;
+  const {
+    id, 
+    message_text,
+    created_at,
+    is_forwarded,
+    forwarded_by,
+    is_deleted,
+    attachment_name,
+  } = msg;
 
   const [showTime, setShowTime] = useState(false);
   const [LoggedInUser, setLoggedInUser] = useState(null);
   const [forwardedUser, setForwardedUser] = useState(null);
-
-  const menuRef = useRef(null);
-  const buttonRef = useRef(null);
 
   const dispatch = useDispatch();
   const { usersData = [] } = useSelector((store) => store.usersData);
@@ -43,6 +50,7 @@ const BrowserChatBubble = ({ msg }) => {
   const toggleShowTime = () => setShowTime((prev) => !prev);
 
   const renderMessageWithMentions = (text, usersData) => {
+    if (!text) return null;
     const sortedUsers = [...usersData].sort(
       (a, b) => b.first_name.length - a.first_name.length
     );
@@ -66,28 +74,45 @@ const BrowserChatBubble = ({ msg }) => {
     return rendered;
   };
 
- return (
-  <div className="chat-bubble-row user">
-    <div className="chat-bubble-container" onClick={toggleShowTime}>
-      {is_forwarded === 1 && (
-        <div className="chat-forwarded">
-          <ArrowRight size={14} />
-          Forwarded {forwardedUser ? `by ${forwardedUser.first_name}` : ""}
+  // Only render bubble if there is message text or if deleted
+  const shouldRenderBubble = is_deleted || message_text;
+
+  return (
+    <div className="chat-bubble-row user">
+      {shouldRenderBubble && (
+        <div className="chat-bubble-container" onClick={toggleShowTime}>
+          {is_forwarded === 1 && (
+            <div className="chat-forwarded">
+              <ArrowRight size={14} />
+              Forwarded {forwardedUser ? `by ${forwardedUser.first_name}` : ""}
+            </div>
+          )}
+
+          <span className={`chat-message-text ${is_deleted ? "deleted" : ""}`}>
+            {is_deleted
+              ? "This message was deleted"
+              : renderMessageWithMentions(message_text, usersData)}
+          </span>
         </div>
       )}
 
-      <span className={`chat-message-text ${is_deleted ? "deleted" : ""}`}>
-        {is_deleted
-          ? "This message was deleted"
-          : renderMessageWithMentions(message_text, usersData)}
-      </span>
+      {/* ⬇️ timestamp OUTSIDE bubble */}
+      {showTime && <div className="chat-timestamp">{formattedTime}</div>}
+
+      {/* Attachments */}
+      {attachment_name && (
+        <>
+          <ImagePreview attachment_name={attachment_name} is_deleted={is_deleted} />
+          <VideoPreview attachment_name={attachment_name} is_deleted={is_deleted} />
+          <FilePreview
+            id={id}
+            attachment_name={attachment_name}
+            is_deleted={is_deleted}
+          />
+        </>
+      )}
     </div>
-
-    {/* ⬇️ timestamp OUTSIDE bubble */}
-    {showTime && <div className="chat-timestamp">{formattedTime}</div>}
-  </div>
-);
-
+  );
 };
 
 export default BrowserChatBubble;

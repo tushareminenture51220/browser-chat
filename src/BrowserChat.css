@@ -166,5 +166,6 @@
   position: relative;
   display: flex;
   gap: 16px; /* spacing between chat windows */
+  z-index: 50;
 }
 

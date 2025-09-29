@@ -1,0 +1,27 @@
+.audio-player {
+  display: inline-block;
+}
+
+.play-button {
+  width: fit-content;
+  padding: 8px;
+  background-color: #3b82f6; /* blue-500 */
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.play-button:hover {
+  background-color: #2563eb; /* blue-600 */
+}
+
+.icon {
+  width: 16px;
+  height: 16px;
+  color: #ffffff;
+}
+
+.hidden-audio {
+  display: none;
+}
