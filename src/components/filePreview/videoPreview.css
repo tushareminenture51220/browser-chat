@@ -88,11 +88,9 @@
   justify-content: center;
 }
 
-/* Progress Bar */
 /* Progress Bar Wrapper */
 .progress-wrapper {
   position: relative;
-  flex: 1;
   height: 8px;
   border-radius: 4px;
   background: rgba(255, 255, 255, 0.15);
@@ -163,7 +161,7 @@
 
 /* Time Display */
 .time-display {
-  font-size: 12px;
+  font-size: 11px;
   color: white;
   min-width: 55px;
   text-align: center;
