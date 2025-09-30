@@ -3,7 +3,6 @@
   display: flex;
   justify-content: flex-end;
   align-items: flex-start;
-  gap: 0.5rem;
   width: fit-content;
   margin-left: auto;
 }
@@ -13,7 +12,6 @@
   display: flex;
   justify-content: flex-start;
   align-items: flex-start;
-  gap: 0.5rem;
   width: fit-content;
 }
 
@@ -75,7 +73,7 @@
 
 /* Timestamp OUTSIDE bubble for all messages */
 .chat-timestamp {
-  font-size: 0.7rem;
+  font-size: 0.6rem;
   color: #9ca3af;
   margin-top: 0.15rem; /* slightly below bubble */
   line-height: 1rem;

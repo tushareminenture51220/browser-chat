@@ -70,7 +70,7 @@
 
 /* Timestamp OUTSIDE bubble */
 .chat-timestamp {
-  font-size: 0.7rem;
+  font-size: 0.6rem;
   color: #9ca3af;         /* gray-400 */
   margin-top: 0.15rem;    /* slightly below bubble */
   line-height: 1rem;
