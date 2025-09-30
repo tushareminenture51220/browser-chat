@@ -50,11 +50,26 @@
   color: #16a34a;
 }
 
+.chat-phone-btn {
+  position: absolute;
+  top: 0.6rem;
+  right: 2.5rem; /* Shifted left from close button */
+  height: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent; /* no background */
+  border: none;           /* remove border */
+  border-radius: 0.25rem;
+  transition: background 0.2s ease;
+  box-shadow: none;       /* no shadow */
+  cursor: pointer;
+}
+
 .chat-close-btn {
   position: absolute;
   top: 0.5rem;
   right: 0.5rem;
-  width: 1.25rem;
   height: 1.25rem;
   display: flex;
   align-items: center;

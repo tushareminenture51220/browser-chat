@@ -356,7 +356,17 @@ const BrowserChatWindow = ({ chatUser, onClose, index }) => {
           </div>
         </div>
 
-        <button onClick={onClose} className="chat-close-btn" aria-label="Close">
+        {/* Phone button */}
+        <button className="chat-phone-btn" aria-label="Call" title="Audio Call">
+          <Icon icon="ic:round-phone" width={18} height={18} />
+        </button>
+
+        <button
+          onClick={onClose}
+          className="chat-close-btn"
+          aria-label="Close"
+          title="Close"
+        >
           <Icon icon="ic:round-close" width={18} height={18} />
         </button>
       </div>
