@@ -1,6 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import "./image.css";
+import "./BrowserChat.css"
 
 const GroupSection = ({ searchTerm, handleOpenChat }) => {
   const { groupData } = useSelector((store) => store.groupsDataStore);

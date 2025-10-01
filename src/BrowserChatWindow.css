@@ -39,14 +39,14 @@
 
 
 .chat-username {
-  font-size: 15px;
-  font-weight: 400;
-  color: #ffffff;
-  /* color: #1f2937; */
+  font-size: 13px;
+  font-weight: 600;
+  /* color: #ffffff; */
+  color: #1f2937;
 }
 
 .chat-status {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   font-weight: 500;
   display: flex;
   align-items: center;

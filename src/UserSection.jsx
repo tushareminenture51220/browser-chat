@@ -1,5 +1,6 @@
 import React from "react";
 import "./image.css";
+import "./BrowserChat.css"
 
 const UserSection = ({ searchTerm, handleOpenChat, usersData }) => {
   // Filter users based on search
@@ -58,7 +59,7 @@ const UserSection = ({ searchTerm, handleOpenChat, usersData }) => {
               <h3>{user.first_name}</h3>
               {/* Unread badge */}
               {user.unreadMessageCount > 0 && (
-                <p className="unread-badge">{user.unreadMessageCount}</p>
+                <span className="unread-badge">{user.unreadMessageCount}</span>
               )}
             </div>
             <div className="chat-list-message">
