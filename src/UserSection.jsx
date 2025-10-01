@@ -34,7 +34,6 @@ const UserSection = ({ searchTerm, handleOpenChat }) => {
               <img
                 src={`https://eminenture.live/public/chatting-files/${user.user_profile}`}
                 alt={user.first_name}
-                className="w-full h-full object-cover rounded-full"
               />
             ) : (
               <span>{user.first_name ? user.first_name[0].toUpperCase() : "U"}</span>

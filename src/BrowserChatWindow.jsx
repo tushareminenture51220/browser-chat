@@ -15,6 +15,9 @@ import "./send.css";
 import BrowserChatFrom from "./components/bubble/BrowserChatFrom";
 import BrowserChatBubble from "./components/bubble/BrowserChatBubble";
 import FilePreviewPopup from "./components/file/FilePreviewPopup";
+import { handleAudioCall } from "../utils/function";
+import { format, isToday, isYesterday } from "date-fns";
+import TaggedPerson from "./TaggedPerson";
 
 const BrowserChatWindow = ({ chatUser, onClose, index }) => {
   const dispatch = useDispatch();
@@ -105,10 +108,11 @@ const BrowserChatWindow = ({ chatUser, onClose, index }) => {
   }, [chatUser, LoggedInUser, isGroup]);
 
   // Online status
-  useEffect(
-    () => setUserIsOnline(onlineUsersData.includes(String(chatUser.id))),
-    [onlineUsersData, chatUser]
-  );
+  useEffect(() => {
+    if (chatUser?.id) {
+      setUserIsOnline(onlineUsersData.includes(String(chatUser.id)));
+    }
+  }, [onlineUsersData, chatUser]);
 
   // Socket listeners for messages
   useEffect(() => {
@@ -256,6 +260,31 @@ const BrowserChatWindow = ({ chatUser, onClose, index }) => {
 
   const rightOffset = 336 + index * 336;
 
+  const groupMessagesByDate = (messages) => {
+    const grouped = {};
+
+    messages.forEach((message) => {
+      const date = new Date(message.created_at);
+      let key;
+
+      if (isToday(date)) {
+        key = "Today";
+      } else if (isYesterday(date)) {
+        key = "Yesterday";
+      } else {
+        key = format(date, "EEEE, MMM d"); // e.g., Monday, Sep 30
+      }
+
+      if (!grouped[key]) {
+        grouped[key] = [];
+      }
+
+      grouped[key].push(message);
+    });
+
+    return grouped;
+  };
+
   return (
     <div className="chat-window" style={{ right: `${rightOffset}px` }}>
       {/* Header */}
@@ -279,12 +308,33 @@ const BrowserChatWindow = ({ chatUser, onClose, index }) => {
           </div>
           <div>
             <h2 className="chat-username">{chatUser.name}</h2>
-            <p className="chat-status">{userIsOnline ? "Online" : "Offline"}</p>
+            {!isGroup && (
+              <p
+                className={`chat-status ${userIsOnline ? "online" : "offline"}`}
+              >
+                {userIsOnline ? "Online" : "Offline"}
+              </p>
+            )}
           </div>
         </div>
-        <button className="chat-phone-btn" aria-label="Call" title="Audio Call">
+        <button
+          className="chat-phone-btn"
+          aria-label="Call"
+          title="Audio Call"
+          onClick={() =>
+            handleAudioCall({
+              currentUser: LoggedInUser,
+              userData: chatUser,
+              type: isGroup ? "Group" : "OneToOne",
+              groupMembersData: usersData,
+              socket,
+              dispatch,
+            })
+          }
+        >
           <Icon icon="ic:round-phone" width={18} height={18} />
         </button>
+
         <button
           onClick={onClose}
           className="chat-close-btn"
@@ -297,13 +347,24 @@ const BrowserChatWindow = ({ chatUser, onClose, index }) => {
 
       {/* Messages */}
       <div className="chat-messages">
-        {messages.map((msg) =>
-          msg?.myself ? (
-            <BrowserChatFrom key={msg.tempId || msg.id} msg={msg} />
-          ) : (
-            <BrowserChatBubble key={msg.tempId || msg.id} msg={msg} />
+        {Object.entries(groupMessagesByDate(messages)).map(
+          ([dateLabel, msgs]) => (
+            <div key={dateLabel}>
+              {/* Date Separator */}
+              <div className="chat-date-separator">{dateLabel}</div>
+
+              {/* Messages */}
+              {msgs.map((msg) =>
+                msg?.myself ? (
+                  <BrowserChatFrom key={msg.tempId || msg.id} msg={msg} />
+                ) : (
+                  <BrowserChatBubble key={msg.tempId || msg.id} msg={msg} />
+                )
+              )}
+            </div>
           )
         )}
+
         {isOtherTyping && (
           <div className="chat-bubble-row">
             <div className="chat-bubble-container typing">
@@ -315,6 +376,7 @@ const BrowserChatWindow = ({ chatUser, onClose, index }) => {
             </div>
           </div>
         )}
+
         <div ref={messagesEndRef}></div>
       </div>
 
@@ -376,37 +438,12 @@ const BrowserChatWindow = ({ chatUser, onClose, index }) => {
 
       {/* Mentions */}
       {mentionDropdown.visible && mentionDropdown.users.length > 0 && (
-        <div className="absolute bottom-[60px] left-0 mb-2 w-80 max-h-72 overflow-y-auto bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl z-50">
-          {mentionDropdown.users.map((user) => (
-            <div
-              key={user.id}
-              className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg"
-              onClick={() => selectUser(user)}
-            >
-              <div className="w-10 h-10 rounded-full overflow-hidden flex items-center justify-center">
-                {user.avatar ? (
-                  <img
-                    src={user.avatar}
-                    alt={user.first_name}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white font-medium">
-                    {user.first_name[0]}
-                  </div>
-                )}
-              </div>
-              <div className="flex flex-col min-w-0 flex-1">
-                <span className="text-gray-900 dark:text-white text-sm truncate">
-                  {user.first_name} {user.last_name}
-                </span>
-                <span className="text-gray-500 dark:text-gray-300 text-xs truncate mt-0.5">
-                  {user.email}
-                </span>
-              </div>
-            </div>
-          ))}
-        </div>
+        <TaggedPerson
+          users={mentionDropdown.users.filter(
+            (user) => user.id !== chatUser.id
+          )}
+          selectUser={selectUser}
+        />
       )}
 
       {/* File Preview */}

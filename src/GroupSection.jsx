@@ -34,7 +34,6 @@ const GroupSection = ({ searchTerm, handleOpenChat }) => {
               <img
                 src={`https://eminenture.live/public/chatting-files/${group.groupImage}`}
                 alt={group.name}
-                className="w-full h-full object-cover rounded-full"
               />
             ) : (
               <span>

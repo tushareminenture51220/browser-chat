@@ -47,8 +47,39 @@
 
 .chat-status {
   font-size: 0.75rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px; /* spacing between dot and text */
+}
+
+/* Dot style */
+.chat-status::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+/* Online = Green dot */
+.chat-status.online::before {
+  background-color: #16a34a; /* green-600 */
+}
+
+/* Offline = Red dot */
+.chat-status.offline::before {
+  background-color: #dc2626; /* red-600 */
+}
+
+
+.chat-status.online {
   color: #16a34a;
 }
+
+.chat-status.offline {
+  color: #dc2626;
+}
+
 
 .chat-phone-btn {
   position: absolute;
@@ -248,3 +279,20 @@
   40% { opacity: 1; }
 }
 
+/* Date Separator (Today, Yesterday, etc.) */
+.chat-date-separator {
+  font-size: 0.85rem;
+  color: #6b7280; /* gray-500 */
+  margin-bottom: 0.5rem;
+  position: sticky;
+  top: 0;
+  background: #f9fafb; /* light gray background */
+  width: fit-content;
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 4px 12px;
+  z-index: 10;
+  border-radius: 8px;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+}
