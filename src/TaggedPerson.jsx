@@ -2,7 +2,6 @@ import React from "react";
 import "./TaggedPerson.css";
 import "./image.css"
 const TaggedPerson = ({ users, selectUser }) => {
-    console.log("user", users)
   return (
     <div className="tagged-person-dropdown">
       {users.map((user) => (

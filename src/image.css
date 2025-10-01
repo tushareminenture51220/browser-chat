@@ -50,15 +50,13 @@
   font-size: 16px;
   position: relative;
   /* Ring effect */
-  box-shadow: 
-    0 0 0 2px #ffffff,
-    0 0 0 4px #3b82f6,
+  box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #3b82f6,
     0 4px 12px rgba(59, 130, 246, 0.3);
   transition: all 0.3s ease;
 }
 
 .chat-avatar::before {
-  content: '';
+  content: "";
   position: absolute;
   top: -2px;
   left: -2px;
@@ -120,7 +118,7 @@
 }
 
 .chat-status::before {
-  content: '';
+  content: "";
   width: 6px;
   height: 6px;
   border-radius: 50%;
@@ -327,7 +325,7 @@
 
 /* Online status indicator */
 .chat-avatar.online::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 2px;
   right: 2px;
@@ -337,4 +335,20 @@
   background: #16a34a;
   border: 2px solid #fff;
   z-index: 2;
+}
+
+.unread-badge {
+  background-color: #f56565;
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: bold;
+  border-radius: 50%;
+  width: 17px;
+  height: 17px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 5px;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+  margin-top: 5px;
 }

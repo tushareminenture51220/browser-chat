@@ -1,15 +1,24 @@
 import React from "react";
-import { useSelector } from "react-redux";
-import "./image.css"
+import "./image.css";
 
-const UserSection = ({ searchTerm, handleOpenChat }) => {
-  const { usersData } = useSelector((store) => store.usersData);
-
-  const filteredUsers = usersData.filter(
+const UserSection = ({ searchTerm, handleOpenChat, usersData }) => {
+  // Filter users based on search
+  let filteredUsers = usersData?.filter(
     (user) =>
       user.first_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.email?.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  // Sort users: unread messages first
+  filteredUsers.sort((a, b) => {
+    if ((b.unreadMessageCount || 0) > 0 && (a.unreadMessageCount || 0) === 0) {
+      return 1; // b comes before a
+    }
+    if ((a.unreadMessageCount || 0) > 0 && (b.unreadMessageCount || 0) === 0) {
+      return -1; // a comes before b
+    }
+    return 0; // keep original order if both have or don't have unread
+  });
 
   return (
     <div className="chat-list">
@@ -23,7 +32,7 @@ const UserSection = ({ searchTerm, handleOpenChat }) => {
               name: user.first_name || "Unknown",
               message: user.email || "",
               time: "",
-              unread: false,
+              unread: user.unreadMessageCount || 0,
               type: "user",
               image: user.user_profile || "",
             })
@@ -38,11 +47,19 @@ const UserSection = ({ searchTerm, handleOpenChat }) => {
             ) : (
               <span>{user.first_name ? user.first_name[0].toUpperCase() : "U"}</span>
             )}
+            {/* Online indicator */}
+            <span
+              className={`online-indicator ${user.user_status ? "online" : "offline"}`}
+            ></span>
           </div>
+
           <div className="chat-list-details">
             <div className="chat-list-header">
               <h3>{user.first_name}</h3>
-              <span></span>
+              {/* Unread badge */}
+              {user.unreadMessageCount > 0 && (
+                <p className="unread-badge">{user.unreadMessageCount}</p>
+              )}
             </div>
             <div className="chat-list-message">
               <p>{user.email}</p>
