@@ -95,7 +95,7 @@ const CallMessageCard = ({ msg }) => {
           {roomName && (
             <div className="room-line">
               <Zap size={16} className="zap-icon" />
-              <span className="room-label">Room:</span>
+              {/* <span className="room-label">Room:</span> */}
               <span className="room-name">{roomName}</span>
             </div>
           )}
