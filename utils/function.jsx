@@ -101,19 +101,16 @@ const startGroupAudioCall = async ({
   }
 
   // 3️⃣ Notify group members
-  membersToNotify.forEach((member) => {
-    socket.current.emit("group-call-user", {
-      receiverId: member.user_id,
-      groupId: userData.id,
-      groupName: userData.name,
-      groupImage: userData.groupImage,
-      callType: "group-audio",
-      callerId: currentUser.id,
-      callerName: currentUser.first_name,
-      roomName,
-      meetingLink,
-      image: currentUser?.image,
-    });
+  socket.current.emit("group-call-user", {
+    groupId: userData.id,
+    groupName: userData.name,
+    groupImage: userData.groupImage,
+    callType: "group-audio",
+    callerId: currentUser.id,
+    callerName: currentUser.first_name,
+    roomName,
+    meetingLink,
+    image: currentUser?.image,
   });
 
   // 4️⃣ Update Redux

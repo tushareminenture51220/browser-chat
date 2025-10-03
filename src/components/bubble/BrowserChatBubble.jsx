@@ -9,16 +9,18 @@ import "./BrowserChatBubble.css";
 import ImagePreview from "../filePreview/ImagePreview";
 import VideoPreview from "../filePreview/VideoPreview";
 import FilePreview from "../filePreview/FilePreview";
+import CallMessageCard from "./CallMessageCard";
 
 const BrowserChatBubble = ({ msg }) => {
   const {
-    id, 
+    id,
     message_text,
     created_at,
     is_forwarded,
     forwarded_by,
     is_deleted,
     attachment_name,
+    meeting_link,
   } = msg;
 
   const [showTime, setShowTime] = useState(false);
@@ -96,14 +98,22 @@ const BrowserChatBubble = ({ msg }) => {
         </div>
       )}
 
+      {meeting_link && <CallMessageCard msg={msg} />}
+
       {/* ⬇️ timestamp OUTSIDE bubble */}
       {showTime && <div className="chat-timestamp">{formattedTime}</div>}
 
       {/* Attachments */}
       {attachment_name && (
         <>
-          <ImagePreview attachment_name={attachment_name} is_deleted={is_deleted} />
-          <VideoPreview attachment_name={attachment_name} is_deleted={is_deleted} />
+          <ImagePreview
+            attachment_name={attachment_name}
+            is_deleted={is_deleted}
+          />
+          <VideoPreview
+            attachment_name={attachment_name}
+            is_deleted={is_deleted}
+          />
           <FilePreview
             id={id}
             attachment_name={attachment_name}

@@ -1,0 +1,94 @@
+.igac-container {
+  position: fixed;
+  top: 5px;
+  right: 5px;
+  z-index: 50;
+  display: flex;
+  justify-content: center;
+  padding: 16px;
+}
+
+.igac-minimized {
+  top: 8px;
+  right: 20px;
+}
+
+.igac-card {
+  background-color: #0f172a;
+  color: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  min-width: 280px;
+  max-width: 90vw;
+  border: 1px solid #374151;
+  cursor: move;
+}
+
+.igac-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+
+.igac-group-image {
+  border-radius: 50%;
+  border: 2px solid #3b82f6;
+  object-fit: cover;
+}
+
+.igac-text {
+  min-width: 0;
+}
+
+.igac-group-name {
+  font-weight: 500;
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.igac-status {
+  font-size: 12px;
+  color: #9ca3af;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.igac-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.igac-btn-accept {
+  background-color: #16a34a;
+  color: white;
+  border-radius: 50%;
+  padding: 8px;
+  border: none;
+  cursor: pointer;
+}
+
+.igac-btn-accept:hover {
+  background-color: #15803d;
+}
+
+.igac-btn-reject {
+  background-color: #dc2626;
+  color: white;
+  border-radius: 50%;
+  padding: 8px;
+  border: none;
+  cursor: pointer;
+}
+
+.igac-btn-reject:hover {
+  background-color: #b91c1c;
+}

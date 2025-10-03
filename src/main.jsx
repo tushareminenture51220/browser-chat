@@ -4,6 +4,8 @@ import ReactDOM from "react-dom/client";
 import ChatWidget from "./ChatWidget";
 import Providers from "../redux/Providers";
 import store from "../redux/store";
+import GlobalGroupAudioCallPopup from "./components/global/GlobalGroupAudioCallPopup";
+import { CallFunctionProvider } from "../context/CallFunctionContext";
 
 function initChatWidget(containerId = "chat-container", props = {}) {
   let container = document.getElementById(containerId);
@@ -16,8 +18,11 @@ function initChatWidget(containerId = "chat-container", props = {}) {
 
   ReactDOM.createRoot(container).render(
     <React.StrictMode>
-      <Providers store={store}>   {/* ✅ wrap here */}
-        <ChatWidget {...props} />
+      <Providers store={store}>
+        <CallFunctionProvider>
+          <ChatWidget {...props} />
+          <GlobalGroupAudioCallPopup />
+        </CallFunctionProvider>
       </Providers>
     </React.StrictMode>
   );

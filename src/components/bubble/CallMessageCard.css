@@ -1,0 +1,178 @@
+.call-message-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin: 1rem 0;
+  font-family: sans-serif;
+}
+
+.call-message-card {
+  background: #f7f6f4;
+  color: #4a5568;
+  border-radius: 0.75rem;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+  max-width: 16rem;
+  width: 100%;
+  border: 1px solid #e2d9c9;
+  transform: translateY(10px);
+  opacity: 0;
+  transition: all 0.3s ease-in-out;
+}
+
+.call-message-card.visible {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.call-message-card.hovered {
+  transform: scale(1.02);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Header */
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.icon-wrapper {
+  padding: 0.375rem;
+  border-radius: 50%;
+  transition: all 0.3s ease-in-out;
+}
+
+.icon-wrapper.audio-bg {
+  background: rgba(16, 185, 129, 0.15);
+}
+
+.icon-wrapper.video-bg {
+  background: rgba(59, 130, 246, 0.15);
+}
+
+.icon-wrapper.pulse {
+  animation: pulse 1.5s infinite;
+}
+
+.audio-icon {
+  color: #059669;
+}
+
+.video-icon {
+  color: #2563eb;
+}
+
+.call-title {
+  font-weight: 600;
+  font-size: 0.875rem;
+  text-transform: capitalize;
+  letter-spacing: 0.02em;
+}
+
+/* Room info */
+.room-info {
+  margin-top: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-left: 0.25rem;
+}
+
+.room-line {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+}
+
+.zap-icon {
+  color: #d97706;
+  animation: pulse 1.5s infinite;
+}
+
+.room-label {
+  color: #6b7280;
+}
+
+.room-name {
+  font-weight: 500;
+  color: #374151;
+  background: rgba(226, 217, 201, 0.6);
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.25rem;
+  font-size: 0.6rem;
+}
+
+/* Join Meeting button */
+.join-btn {
+  margin-top: 1rem;
+  width: 100%;
+  font-size: 0.75rem;
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transform: translateY(0);
+}
+
+.audio-btn {
+  background: linear-gradient(to right, #059669, #047857);
+  color: white;
+}
+
+.video-btn {
+  background: linear-gradient(to right, #2563eb, #1d4ed8);
+  color: white;
+}
+
+.join-btn.btn-hover {
+  transform: translateY(-1px);
+}
+
+.arrow-icon {
+  width: 0.875rem;
+  height: 0.875rem;
+  transition: transform 0.3s ease-in-out;
+}
+
+.arrow-icon.arrow-hover {
+  transform: translateX(3px);
+}
+
+/* Meeting ended */
+.meeting-ended {
+  margin-top: 0.875rem;
+  text-align: center;
+  font-size: 0.65rem;
+  color: #6b7280;
+  border-top: 1px solid rgba(226, 217, 201, 0.8);
+  padding-top: 0.75rem;
+  opacity: 1;
+  transition: opacity 0.5s ease-in-out;
+}
+
+/* Animations */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.05);
+  }
+}

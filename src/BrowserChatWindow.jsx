@@ -114,9 +114,10 @@ const BrowserChatWindow = ({ chatUser, onClose, index }) => {
     }
   }, [onlineUsersData, chatUser]);
 
-  // Socket listeners for messages
   useEffect(() => {
     if (!socket.current || !LoggedInUser) return;
+
+    // Handle private messages
     const handlePrivateMsg = (data) => {
       const relevant =
         (Number(data.sender_id) === chatUser.id &&
@@ -125,6 +126,8 @@ const BrowserChatWindow = ({ chatUser, onClose, index }) => {
           Number(data.sender_id) === LoggedInUser.id);
       if (relevant) setMessages((prev) => [...prev, data]);
     };
+
+    // Handle group messages (existing)
     const handleGroupMsg = (data) => {
       if (
         isGroup &&
@@ -134,11 +137,56 @@ const BrowserChatWindow = ({ chatUser, onClose, index }) => {
         setMessages((prev) => [...prev, data]);
       }
     };
+
+    // Handle group call ended
+    const handleGroupCallEnded = ({ groupId }) => {
+      if (isGroup && chatUser.id === groupId) {
+        setMessages((prev) =>
+          prev.map((msg) =>
+            msg.roomName && msg.group_id === groupId
+              ? { ...msg, meeting_ended: true }
+              : msg
+          )
+        );
+      }
+    };
+
+    const handleSaved = (savedMsg) => {
+      setMessages((prev) => {
+        // Case 1: replace tempId
+        if (savedMsg.tempId) {
+          const exists = prev.some((msg) => msg.tempId === savedMsg.tempId);
+          if (exists) {
+            return prev.map((msg) =>
+              msg.tempId === savedMsg.tempId ? savedMsg : msg
+            );
+          }
+        }
+
+        // Case 2: append new if not found
+        const alreadyExists = prev.some(
+          (msg) => String(msg.id) === String(savedMsg.id)
+        );
+        if (!alreadyExists) {
+          return [...prev, savedMsg];
+        }
+
+        return prev; // do nothing if duplicate
+      });
+    };
+
+    // Register socket events
     socket.current.on("receive-msg", handlePrivateMsg);
+    socket.current.on("message-saved", handleSaved);
     socket.current.on("receive-group-msg", handleGroupMsg);
+    socket.current.on("group-call-ended", handleGroupCallEnded);
+
+    // Cleanup
     return () => {
       socket.current.off("receive-msg", handlePrivateMsg);
+      socket.current.off("message-saved", handleSaved);
       socket.current.off("receive-group-msg", handleGroupMsg);
+      socket.current.off("group-call-ended", handleGroupCallEnded);
     };
   }, [socket.current, chatUser?.id, LoggedInUser?.id, isGroup]);
 

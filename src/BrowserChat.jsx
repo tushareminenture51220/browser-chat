@@ -87,7 +87,7 @@ const BrowserChat = ({ onClose: externalOnClose }) => {
           </div>
           <div>
             <h2 className="chat-username">
-              {loggedInUser?.first_name || "Tushar"}
+              {loggedInUser?.first_name || "T"}
             </h2>
             <p className="chat-status">Available</p>
           </div>

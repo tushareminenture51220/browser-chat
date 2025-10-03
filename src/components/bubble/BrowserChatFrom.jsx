@@ -6,9 +6,10 @@ import "./BrowserChatFrom.css";
 import ImagePreview from "../filePreview/ImagePreview";
 import VideoPreview from "../filePreview/VideoPreview";
 import FilePreview from "../filePreview/FilePreview";
+import CallMessageCard from "./CallMessageCard";
 
 const BrowserChatFrom = ({ msg }) => {
-  const { message_text, created_at, is_deleted, attachment_name, id } = msg;
+  const { message_text, created_at, is_deleted, attachment_name, id, meeting_link } = msg;
 
   const [showTime, setShowTime] = useState(false);
   const formattedTime = useFormattedTime(created_at);
@@ -28,6 +29,8 @@ const BrowserChatFrom = ({ msg }) => {
           </span>
         </div>
       )}
+
+      {meeting_link && <CallMessageCard msg={msg} />}
 
       {/* Timestamp */}
       {showTime && <div className="chat-timestamp">{formattedTime}</div>}
