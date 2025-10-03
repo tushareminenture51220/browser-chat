@@ -53,9 +53,6 @@ const ParticipantCard = ({
                 && `https://eminenture.live/public/chatting-files/${user.image}`
             }
             alt={user.first_name || ""}
-            fill
-            className="avatar-img"
-            quality={100}
           />
         </div>
       </div>

@@ -139,7 +139,6 @@ const GlobalGroupAudioCallPopup = () => {
       const existingParticipant = joinedRoom.participants.get(
         `user-${myUserId}`
       );
-      console.log("existingParticipant", existingParticipant);
       if (existingParticipant) {
         existingParticipant.disconnect();
       }
@@ -255,10 +254,8 @@ const GlobalGroupAudioCallPopup = () => {
     try {
       const identity = `user-${myUserId}`;
       const joinedRoom = await joinRoom(existingRoomName, identity);
-      console.log("joinedRoom", joinedRoom);
 
       if (joinedRoom) {
-        console.log("kk");
         dispatch(setCallActive(true));
         dispatch(setCallStatus("accepted"));
 
@@ -269,6 +266,7 @@ const GlobalGroupAudioCallPopup = () => {
           userId: myUserId,
           name: userData.first_name,
           roomName: existingRoomName,
+          image: userData?.image,
         });
 
         // toast.success("You rejoined the group call successfully!");
