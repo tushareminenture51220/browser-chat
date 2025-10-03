@@ -22,6 +22,7 @@ import { toast } from "react-toastify";
 import IncomingGroupAudioCall from "./IncomingGroupAudioCall.jsx";
 import AcceptedGroupCall from "../startCall/AcceptedGroupCall.jsx";
 import { useCallFunctions } from "../../../context/CallFunctionContext.jsx";
+import GroupScreenShare from "../startCall/GroupScreenShare.jsx";
 
 const GlobalGroupAudioCallPopup = () => {
   const { socket } = useSocket();
@@ -254,10 +255,10 @@ const GlobalGroupAudioCallPopup = () => {
     try {
       const identity = `user-${myUserId}`;
       const joinedRoom = await joinRoom(existingRoomName, identity);
-      console.log("joinedRoom", joinedRoom)
+      console.log("joinedRoom", joinedRoom);
 
       if (joinedRoom) {
-        console.log("kk")
+        console.log("kk");
         dispatch(setCallActive(true));
         dispatch(setCallStatus("accepted"));
 
@@ -544,7 +545,7 @@ const GlobalGroupAudioCallPopup = () => {
     ["group-audio"].includes(callType) &&
     (isIncomingCall || isOutgoingCall || isCallActive);
 
-//   if (!shouldRenderGroupCall) return null;
+  //   if (!shouldRenderGroupCall) return null;
 
   const sharedProps = {
     myUserId,
@@ -575,7 +576,7 @@ const GlobalGroupAudioCallPopup = () => {
         aria-hidden="true"
       />
 
-      {isCallActive && (
+      {!remoteScreenTrack && isCallActive && (
         <AcceptedGroupCall
           groupName={groupName}
           callDuration={callDuration}
@@ -588,6 +589,17 @@ const GlobalGroupAudioCallPopup = () => {
           handleHangUp={handleHangUp}
           setIsMinimized={setIsMinimized}
           formatDuration={formatDuration}
+          callerId={callerId}
+          remoteAudioTracks={remoteAudioTracks}
+        />
+      )}
+
+      {remoteScreenTrack && (
+        <GroupScreenShare
+          remoteScreenTrack={remoteScreenTrack}
+          handleHangUp={handleHangUp}
+          toggleMute={toggleMute}
+          isMuted={localTrack ? !localTrack.isEnabled : false}
           callerId={callerId}
           remoteAudioTracks={remoteAudioTracks}
         />
