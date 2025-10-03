@@ -14,7 +14,7 @@ const GroupScreenShare = ({
   callerId,
   remoteAudioTracks,
 }) => {
-    console.log("aaaaaaaa")
+    // console.log("aaaaaaaa")
   const remoteScreenRef = useRef(null);
   const nodeRef = useRef(null);
   const [isMinimized, setIsMinimized] = useState(false);

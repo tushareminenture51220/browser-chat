@@ -416,7 +416,6 @@ const GlobalGroupAudioCallPopup = () => {
       name,
       image,
     }) => {
-      console.log("data", participants);
       dispatch(setActiveGroupParticipants(participants));
 
       // Allow both fresh join and rejoin
@@ -565,6 +564,7 @@ const GlobalGroupAudioCallPopup = () => {
   };
 
   // near top of component render (just before your shouldRenderGroupCall check)
+//   console.log("remoteScreenTrack", remoteScreenTrack)
   return (
     <>
       {/* Always-mounted hidden audio container so track.attach() can append safely */}
