@@ -1,4 +1,4 @@
-// src/index.js (or wherever you mount widget)
+// src/main.jsx
 import React from "react";
 import ReactDOM from "react-dom/client";
 import ChatWidget from "./ChatWidget";
@@ -8,43 +8,57 @@ import GlobalGroupAudioCallPopup from "./components/global/GlobalGroupAudioCallP
 import { CallFunctionProvider } from "../context/CallFunctionContext";
 import GlobalSocketListener from "../socket/GlobalSocketListener";
 
+// Track the chat widget root to prevent multiple renders
+let chatWidgetRoot = null;
+
 function initChatWidget(containerId = "chat-container", props = {}) {
   let container = document.getElementById(containerId);
 
+  // Create container if it doesn't exist
   if (!container) {
     container = document.createElement("div");
     container.id = containerId;
     document.body.appendChild(container);
   }
 
-  ReactDOM.createRoot(container).render(
-    <React.StrictMode>
-      <Providers store={store}>
-        <CallFunctionProvider>
-          <ChatWidget {...props} />
-          <GlobalGroupAudioCallPopup />
-          <GlobalSocketListener />
-        </CallFunctionProvider>
-      </Providers>
-    </React.StrictMode>
-  );
+  // Only create root if not already mounted
+  if (!chatWidgetRoot) {
+    chatWidgetRoot = ReactDOM.createRoot(container);
+    chatWidgetRoot.render(
+      <React.StrictMode>
+        <Providers store={store}>
+          <CallFunctionProvider>
+            <ChatWidget {...props} />
+            <GlobalGroupAudioCallPopup />
+            <GlobalSocketListener />
+          </CallFunctionProvider>
+        </Providers>
+      </React.StrictMode>
+    );
+  }
+}
+
+// Optional destroy function to safely unmount the widget
+function destroyChatWidget() {
+  if (chatWidgetRoot) {
+    chatWidgetRoot.unmount();
+    chatWidgetRoot = null;
+  }
 }
 
 if (typeof window !== "undefined") {
-  window.ChatWidget = { initChatWidget };
+  // Expose widget methods globally
+  window.ChatWidget = { initChatWidget, destroyChatWidget };
 
+  // Initialize on DOMContentLoaded if not already initialized
   window.addEventListener("DOMContentLoaded", () => {
-    if (!document.getElementById("chat-container")) {
-      const container = document.createElement("div");
-      container.id = "chat-container";
-      document.body.appendChild(container);
+    if (!document.getElementById("chat-container") || !chatWidgetRoot) {
+      initChatWidget("chat-container", {
+        initialUser: "Guest User",
+        theme: "light",
+      });
     }
-
-    initChatWidget("chat-container", {
-      initialUser: "Guest User",
-      theme: "light",
-    });
   });
 }
 
-export { initChatWidget };
+export { initChatWidget, destroyChatWidget };
