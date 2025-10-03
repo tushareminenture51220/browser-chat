@@ -6,6 +6,7 @@ import Providers from "../redux/Providers";
 import store from "../redux/store";
 import GlobalGroupAudioCallPopup from "./components/global/GlobalGroupAudioCallPopup";
 import { CallFunctionProvider } from "../context/CallFunctionContext";
+import GlobalSocketListener from "../socket/GlobalSocketListener";
 
 function initChatWidget(containerId = "chat-container", props = {}) {
   let container = document.getElementById(containerId);
@@ -22,6 +23,7 @@ function initChatWidget(containerId = "chat-container", props = {}) {
         <CallFunctionProvider>
           <ChatWidget {...props} />
           <GlobalGroupAudioCallPopup />
+          <GlobalSocketListener />
         </CallFunctionProvider>
       </Providers>
     </React.StrictMode>

@@ -566,7 +566,6 @@ const GlobalGroupAudioCallPopup = () => {
   };
 
   // near top of component render (just before your shouldRenderGroupCall check)
-  console.log("call", isCallActive);
   return (
     <>
       {/* Always-mounted hidden audio container so track.attach() can append safely */}

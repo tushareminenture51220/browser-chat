@@ -78,6 +78,15 @@
   box-shadow: 0 8px 12px rgba(0,0,0,0.3);
 }
 
+.mute-btn .icon {
+  color: #1e40af; /* text-blue-800 */
+}
+
+.mute-btn.active .icon {
+  color: #dc2626; /* red for mic-off if you want */
+}
+
+
 .control-btn .icon {
   width: 1.25rem;
   height: 1.25rem;
