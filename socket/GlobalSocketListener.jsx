@@ -37,7 +37,7 @@ const GlobalSocketListener = () => {
 
     // ✅ Join all group rooms
     axios
-      .get(`${process.env.NEXT_PUBLIC_HRMS_MA_API}/api/get-groups/${myUserId}`)
+      .get(`${import.meta.env.VITE_HRMS_MA_API}/api/get-groups/${myUserId}`)
       .then((res) => {
         res.data.groups?.forEach((group) => {
           activeSocket.emit("join-group", group.id);
