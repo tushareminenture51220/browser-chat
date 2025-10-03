@@ -416,7 +416,7 @@ const GlobalGroupAudioCallPopup = () => {
       name,
       image,
     }) => {
-      // console.log("data", userId, from, participants, roomName, name);
+      console.log("data", participants);
       dispatch(setActiveGroupParticipants(participants));
 
       // Allow both fresh join and rejoin

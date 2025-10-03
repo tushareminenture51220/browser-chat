@@ -123,6 +123,7 @@ const startGroupAudioCall = async ({
       callType: "group-audio",
       roomName,
       meetingLink,
+      callerId: currentUser.id,
     })
   );
   dispatch(setMeetingStart(Date.now()));
