@@ -152,6 +152,20 @@ const BrowserChatWindow = ({ chatUser, onClose, index }) => {
     };
 
     const handleSaved = (savedMsg) => {
+      // 1:1 chat
+      if (!isGroup) {
+        const relevant =
+          (Number(savedMsg.sender_id) === Number(chatUser.id) &&
+            Number(savedMsg.receiver_id) === Number(LoggedInUser.id)) ||
+          (Number(savedMsg.receiver_id) === Number(chatUser.id) &&
+            Number(savedMsg.sender_id) === Number(LoggedInUser.id));
+
+        if (!relevant) return; // ignore messages not for this chat
+      }
+
+      // Group chat
+      if (isGroup && savedMsg.group_id !== chatUser.id) return;
+
       setMessages((prev) => {
         // Case 1: replace tempId
         if (savedMsg.tempId) {
