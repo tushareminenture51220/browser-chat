@@ -14,7 +14,6 @@ const GroupScreenShare = ({
   callerId,
   remoteAudioTracks,
 }) => {
-    // console.log("aaaaaaaa")
   const remoteScreenRef = useRef(null);
   const nodeRef = useRef(null);
   const [isMinimized, setIsMinimized] = useState(false);
@@ -23,7 +22,7 @@ const GroupScreenShare = ({
     (state) => state.call
   );
 
-  // 🎥 Attach remote screen track
+  // Attach remote screen track
   useEffect(() => {
     if (remoteScreenTrack && remoteScreenRef.current) {
       remoteScreenTrack.attach(remoteScreenRef.current);
@@ -33,7 +32,7 @@ const GroupScreenShare = ({
     }
   }, [remoteScreenTrack]);
 
-  // ✅ Sort participants so leader is always first
+  // Sort participants so leader is always first
   const sortedParticipants = useMemo(() => {
     return [...activeGroupParticipants].sort((a, b) => {
       if (a.userId === callerId) return -1;
@@ -55,26 +54,26 @@ const GroupScreenShare = ({
       />
 
       {isMinimized ? (
-          <div ref={nodeRef} className="mini-container">
-            <div className="mini-controls">
-              <button
-                onClick={() => setIsMinimized(false)}
-                className="btn maximize-btn"
-                title="Maximize"
-              >
-                <Icon icon="ic:round-open-in-full" className="icon-sm" />
-              </button>
-              <button
-                onClick={handleHangUp}
-                className="btn hangup-btn"
-                title="Hang Up"
-              >
-                <Icon icon="mdi:phone-hangup" className="icon-sm" />
-              </button>
-            </div>
+        <div ref={nodeRef} className="mini-container">
+          <div className="mini-controls">
+            <button
+              onClick={() => setIsMinimized(false)}
+              className="maximize-btn"
+              title="Maximize"
+            >
+              <Icon icon="ic:round-open-in-full" className="icon-sm" />
+            </button>
+            <button
+              onClick={handleHangUp}
+              className="hangup-mini-btn"
+              title="Hang Up"
+            >
+              <Icon icon="mdi:phone-hangup" className="icon-sm" />
+            </button>
           </div>
+        </div>
       ) : (
-        // 👉 Full screen view with sidebar participants + controls
+        // Full screen view with sidebar participants + controls
         <div className="fullscreen-container">
           {/* Participants Sidebar */}
           <div className="participants-sidebar">
@@ -97,7 +96,7 @@ const GroupScreenShare = ({
               <button
                 onClick={toggleMute}
                 title={isMuted ? "Unmute" : "Mute"}
-                className={`btn mute-btn ${isMuted ? "muted" : ""}`}
+                className={`mute-btn ${isMuted ? "muted" : ""}`}
               >
                 <Icon
                   icon={isMuted ? "ic:baseline-mic-off" : "ic:baseline-mic"}
@@ -109,7 +108,7 @@ const GroupScreenShare = ({
               <button
                 onClick={() => setIsMinimized(true)}
                 title="Minimize"
-                className="btn minimize-btn"
+                className="minimize-btn"
               >
                 <Icon icon="ic:round-close-fullscreen" className="icon-md" />
               </button>
@@ -118,7 +117,7 @@ const GroupScreenShare = ({
               <button
                 onClick={handleHangUp}
                 title="Hang Up"
-                className="btn hangup-btn"
+                className="hangup-btn"
               >
                 <Icon icon="mdi:phone-hangup" className="icon-md" />
               </button>

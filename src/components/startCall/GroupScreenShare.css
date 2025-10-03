@@ -94,26 +94,27 @@
 }
 
 /* Buttons */
-.btn {
+.mute-btn,
+.minimize-btn,
+.maximize-btn,
+.hangup-btn,
+.hangup-mini-btn {
   position: relative;
   padding: 10px;
   border-radius: 50%;
   border: 1px solid transparent;
-  background: white;
   box-shadow: 0 2px 6px rgba(0,0,0,0.3);
   cursor: pointer;
   transition: all 0.2s ease-in-out;
-}
-
-.btn:hover {
-  transform: scale(1.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .mute-btn {
   border: 1px solid #4b5563;
   background: white;
 }
-
 .mute-btn.muted {
   border-color: #3b82f6;
 }
@@ -124,10 +125,25 @@
   color: white;
 }
 
-.hangup-btn {
+.maximize-btn {
+  background: #2563eb;
+  border-color: #3b82f6;
+  color: white;
+}
+
+.hangup-btn,
+.hangup-mini-btn {
   background: #dc2626;
   border-color: #ef4444;
   color: white;
+}
+
+.mute-btn:hover,
+.minimize-btn:hover,
+.maximize-btn:hover,
+.hangup-btn:hover,
+.hangup-mini-btn:hover {
+  transform: scale(1.05);
 }
 
 /* Icons */
