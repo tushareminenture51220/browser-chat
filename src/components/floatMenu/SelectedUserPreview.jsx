@@ -5,7 +5,6 @@ import { Icon } from "@iconify/react";
 import "./SelectedUserPreview.css";
 
 const SelectedUserPreview = ({ selectedUsersData, removeParticipant }) => {
-  console.log("selectedUsersData", selectedUsersData);
   return (
     <div className="selected-user-preview">
       {selectedUsersData?.map((user, index) => (
@@ -13,20 +12,22 @@ const SelectedUserPreview = ({ selectedUsersData, removeParticipant }) => {
           {user?.user_profile ? (
             <img
               src={
-                `https://eminenture.live/public/chatting-files/${user.user_profile}` ||
-                `https://eminenture.live/public/chatting-files/${user.groupImage}`
+                `https://eminenture.live/public/chatting-files/${user.user_profile}`
               }
-              alt={user?.first_name || user.name}
+              alt={user?.first_name || "User"}
               className="user-avatar"
               onError={(e) => (e.target.style.display = "none")}
             />
           ) : (
-            <span className="user-avatar">
-              {/* {user?.first_name?.charAt(0)?.toUpperCase() || "U"} */}
-            </span>
+            <img
+              src={`https://eminenture.live/public/chatting-files/${user.groupImage}`}
+              alt={user?.first_name || user.name}
+              className="user-avatar"
+              onError={(e) => (e.target.style.display = "none")}
+            />
           )}
 
-          <span className="user-name">{user?.first_name || user.name}</span>
+          <span className="user-card-name">{user?.first_name || user.name}</span>
           <button
             onClick={() => removeParticipant(user?.id, user?.type)}
             type="button"

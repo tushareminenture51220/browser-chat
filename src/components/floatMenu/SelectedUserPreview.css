@@ -36,8 +36,14 @@
   color: #4f46e5; /* initial for users without avatar */
 }
 
-.user-name {
-  margin-right: 6px;
+.user-card-name {
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+  font-size: 0.875rem;
+  margin-right: 10px;
 }
 
 .remove-btn {
