@@ -8,12 +8,13 @@ import VideoPreview from "../filePreview/VideoPreview";
 import FilePreview from "../filePreview/FilePreview";
 import CallMessageCard from "./CallMessageCard";
 import FloatingMenu from "../floatMenu/FloatingMenu";
-import "./BrowserChatFrom.css";
-import "../floatMenu/menu.css";
 import EditMessage from "../floatMenu/EditMessage";
 import DeleteMessage from "../floatMenu/DeleteMessage";
+import "./BrowserChatFrom.css";
+import "../floatMenu/menu.css";
+import ForwardMessageModal from "../floatMenu/ForwardMessageModal";
 
-const BrowserChatFrom = ({ msg }) => {
+const BrowserChatFrom = ({ msg, socket }) => {
   const {
     message_text,
     created_at,
@@ -26,16 +27,16 @@ const BrowserChatFrom = ({ msg }) => {
   const [showTime, setShowTime] = useState(false);
   const [openMenuId, setOpenMenuId] = useState(null);
   const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
-  const [editVisible, setEditVisible] = useState(false); // ✅ edit popup
-  const [currentMessage, setCurrentMessage] = useState(msg); // track updated message
+  const [editVisible, setEditVisible] = useState(false);
   const [deleteVisible, setDeleteVisible] = useState(false);
+  const [forwardVisible, setForwardVisible] = useState(false); // ✅ new forward modal state
 
+  const [currentMessage, setCurrentMessage] = useState(msg);
   const formattedTime = useFormattedTime(created_at);
   const menuRef = useRef(null);
   const buttonRef = useRef(null);
 
   const toggleShowTime = () => setShowTime((prev) => !prev);
-
   const shouldRenderBubble = is_deleted || currentMessage.message_text;
 
   const handleMenuToggle = (e) => {
@@ -46,12 +47,9 @@ const BrowserChatFrom = ({ msg }) => {
     let top = rect.bottom + 2;
     let left = rect.left - 150;
 
-    if (top + menuHeight > window.innerHeight) {
-      top = rect.top - menuHeight - 6;
-    }
-    if (left + menuWidth > window.innerWidth) {
+    if (top + menuHeight > window.innerHeight) top = rect.top - menuHeight - 6;
+    if (left + menuWidth > window.innerWidth)
       left = window.innerWidth - menuWidth - 10;
-    }
     if (left < 0) left = 10;
 
     setMenuPosition({ top, left });
@@ -60,20 +58,24 @@ const BrowserChatFrom = ({ msg }) => {
 
   const handleEditClick = () => {
     setEditVisible(true);
-    setOpenMenuId(null); // close menu
-  };
-
-  const handleMessageUpdate = (updatedMessage) => {
-    setCurrentMessage(updatedMessage); // update message in UI
-    setEditVisible(false); // close edit popup
+    setOpenMenuId(null);
   };
 
   const handleDeleteClick = () => {
-    setDeleteVisible(true); // show delete popup
-    setOpenMenuId(null); // close menu
+    setDeleteVisible(true);
+    setOpenMenuId(null);
   };
 
-  // Callback after delete
+  const handleForwardClick = () => {
+    setForwardVisible(true); // ✅ open modal
+    setOpenMenuId(null);
+  };
+
+  const handleMessageUpdate = (updatedMessage) => {
+    setCurrentMessage(updatedMessage);
+    setEditVisible(false);
+  };
+
   const handleMessageDeleted = (deletedMessageId) => {
     setCurrentMessage((prev) =>
       prev.id === deletedMessageId ? { ...prev, is_deleted: true } : prev
@@ -99,10 +101,7 @@ const BrowserChatFrom = ({ msg }) => {
   return (
     <div className="chat-bubble-row self relative">
       {shouldRenderBubble && (
-        <div
-          className="chat-bubble-container from group"
-          onClick={toggleShowTime}
-        >
+        <div className="chat-bubble-container from group" onClick={toggleShowTime}>
           {!is_deleted && currentMessage.message_text && (
             <button
               ref={buttonRef}
@@ -113,7 +112,11 @@ const BrowserChatFrom = ({ msg }) => {
             </button>
           )}
 
-          <span className={`chat-message-text ${is_deleted ? "chat-deleted" : ""}`}>
+          <span
+            className={`chat-message-text ${
+              is_deleted ? "chat-deleted" : ""
+            }`}
+          >
             {is_deleted
               ? "This message was deleted"
               : currentMessage.message_text}
@@ -127,19 +130,9 @@ const BrowserChatFrom = ({ msg }) => {
 
       {attachment_name && (
         <>
-          <ImagePreview
-            attachment_name={attachment_name}
-            is_deleted={is_deleted}
-          />
-          <VideoPreview
-            attachment_name={attachment_name}
-            is_deleted={is_deleted}
-          />
-          <FilePreview
-            id={id}
-            attachment_name={attachment_name}
-            is_deleted={is_deleted}
-          />
+          <ImagePreview attachment_name={attachment_name} is_deleted={is_deleted} />
+          <VideoPreview attachment_name={attachment_name} is_deleted={is_deleted} />
+          <FilePreview id={id} attachment_name={attachment_name} is_deleted={is_deleted} />
         </>
       )}
 
@@ -154,7 +147,8 @@ const BrowserChatFrom = ({ msg }) => {
             position: "fixed",
           }}
           onEdit={handleEditClick}
-          onDelete={handleDeleteClick} // ✅ pass delete callback
+          onDelete={handleDeleteClick}
+          onForward={handleForwardClick} // ✅ add forward click
         />
       )}
 
@@ -162,7 +156,7 @@ const BrowserChatFrom = ({ msg }) => {
         <EditMessage
           message={currentMessage}
           onClose={() => setEditVisible(false)}
-          onMessageUpdated={handleMessageUpdate} // ✅ update message
+          onMessageUpdated={handleMessageUpdate}
         />
       )}
 
@@ -170,7 +164,16 @@ const BrowserChatFrom = ({ msg }) => {
         <DeleteMessage
           message={currentMessage}
           onClose={() => setDeleteVisible(false)}
-          onMessageDeleted={handleMessageDeleted} // update bubble UI
+          onMessageDeleted={handleMessageDeleted}
+        />
+      )}
+
+      {forwardVisible && (
+        <ForwardMessageModal
+          message={currentMessage}
+          socket={socket}
+          onClose={() => setForwardVisible(false)}
+          onForwarded={() => setForwardVisible(false)}
         />
       )}
     </div>

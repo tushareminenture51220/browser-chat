@@ -10,7 +10,7 @@ import ImagePreview from "../filePreview/ImagePreview";
 import VideoPreview from "../filePreview/VideoPreview";
 import FilePreview from "../filePreview/FilePreview";
 import CallMessageCard from "./CallMessageCard";
-import "../floatMenu/menu.css"
+import "../floatMenu/menu.css";
 import FloatingMenu from "../floatMenu/FloatingMenu";
 
 const BrowserChatBubble = ({ msg }) => {
@@ -158,17 +158,32 @@ const BrowserChatBubble = ({ msg }) => {
 
       {attachment_name && (
         <>
-          <ImagePreview attachment_name={attachment_name} is_deleted={is_deleted} />
-          <VideoPreview attachment_name={attachment_name} is_deleted={is_deleted} />
-          <FilePreview id={id} attachment_name={attachment_name} is_deleted={is_deleted} />
+          <ImagePreview
+            attachment_name={attachment_name}
+            is_deleted={is_deleted}
+          />
+          <VideoPreview
+            attachment_name={attachment_name}
+            is_deleted={is_deleted}
+          />
+          <FilePreview
+            id={id}
+            attachment_name={attachment_name}
+            is_deleted={is_deleted}
+          />
         </>
       )}
 
       {isMenuOpen && (
         <FloatingMenu
+          show="fromUser"
           message_text={message_text}
           closeMenu={() => setOpenMenuId(null)}
-          style={{ top: menuPosition.top, left: menuPosition.left, position: "fixed" }}
+          style={{
+            top: menuPosition.top,
+            left: menuPosition.left,
+            position: "fixed",
+          }}
           ref={menuRef}
         />
       )}

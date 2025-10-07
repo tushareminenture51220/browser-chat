@@ -1,0 +1,38 @@
+.inline-loader-container {
+  background-color: #bfdbfe; /* light blue */
+  padding: 8px;
+  margin: 8px 4px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  border-radius: 4px;
+}
+
+.inline-loader-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.inline-spinner {
+  width: 28px;
+  height: 28px;
+  margin-right: 8px;
+  color: #ffffff;
+  fill: #06b6d4;
+  animation: spin 1s linear infinite;
+}
+
+/* Spinner animation */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.inline-loader-text {
+  font-weight: 600;
+  font-size: 14px;
+  color: #1e3a8a; /* dark blue text */
+}

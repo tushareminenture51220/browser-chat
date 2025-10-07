@@ -1,0 +1,49 @@
+.selected-user-preview {
+  margin-bottom: 6px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.user-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px;
+  background-color: #fee2e2; /* light red */
+  color: #991b1b; /* dark red text */
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 4px;
+  transition: background 0.2s ease;
+}
+
+.user-avatar {
+  border-radius: 50%;
+  margin-right: 6px;
+}
+
+.user-name {
+  margin-right: 6px;
+}
+
+.remove-btn {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  padding: 2px;
+  transition: all 0.2s ease;
+}
+
+.remove-btn:hover {
+  background-color: #fecaca;
+  color: #7f1d1d;
+  border-radius: 3px;
+}
+
+.remove-icon {
+  width: 16px;
+  height: 16px;
+  color: #dc2626;
+}
