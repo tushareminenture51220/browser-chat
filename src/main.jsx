@@ -5,6 +5,7 @@ import ChatWidget from "./ChatWidget";
 import Providers from "../redux/Providers";
 import store from "../redux/store";
 import GlobalGroupAudioCallPopup from "./components/global/GlobalGroupAudioCallPopup";
+import GlobalAudioCallPopup from "./components/global/individual/GlobalAudioCallPopup";
 import { CallFunctionProvider } from "../context/CallFunctionContext";
 import GlobalSocketListener from "../socket/GlobalSocketListener";
 
@@ -30,6 +31,7 @@ function initChatWidget(containerId = "chat-container", props = {}) {
           <CallFunctionProvider>
             <ChatWidget {...props} />
             <GlobalGroupAudioCallPopup />
+            <GlobalAudioCallPopup />
             <GlobalSocketListener />
           </CallFunctionProvider>
         </Providers>

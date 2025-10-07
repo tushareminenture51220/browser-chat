@@ -542,7 +542,7 @@ const GlobalGroupAudioCallPopup = () => {
     ["group-audio"].includes(callType) &&
     (isIncomingCall || isOutgoingCall || isCallActive);
 
-  //   if (!shouldRenderGroupCall) return null;
+    if (!shouldRenderGroupCall) return null;
 
   const sharedProps = {
     myUserId,

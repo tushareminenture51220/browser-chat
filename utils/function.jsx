@@ -140,11 +140,12 @@ const startOneToOneAudioCall = async ({
   dispatch,
 }) => {
   // 1️⃣ Update Redux
+  // console.log("userData", userData)
   dispatch(
     startOutgoingCall({
       receiverId: userData.id,
-      receiverName: userData.first_name,
-      receiverImage: userData.profile,
+      receiverName: userData.name,
+      receiverImage: userData.image,
       callerId: currentUser.id,
       callerName: currentUser.first_name,
       callerImage: currentUser.image || "",

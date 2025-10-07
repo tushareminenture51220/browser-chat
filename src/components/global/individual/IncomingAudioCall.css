@@ -1,0 +1,201 @@
+/* === Incoming Audio Call Popup === */
+
+.incoming-call-container {
+  position: fixed;
+  top: 1.25rem;
+  right: 1.25rem;
+  z-index: 9999;
+  cursor: move;
+  animation: slide-up 0.3s ease;
+}
+
+.incoming-call-popup {
+  background-color: #0f172a;
+  color: white;
+  border-radius: 12px;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);
+  border: 1px solid #334155;
+  padding: 1rem 1.25rem;
+  min-width: 300px;
+  max-width: 90vw;
+  transition: all 0.3s ease;
+}
+
+.incoming-call-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.caller-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.caller-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #22c55e;
+}
+
+.caller-details {
+  min-width: 0;
+  margin-right: 1rem;
+}
+
+.caller-name {
+  font-weight: 300;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+}
+
+.caller-status {
+  color: #94a3b8;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* === Controls === */
+
+.call-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.control-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Individual button colors */
+.accept-btn {
+  background: #22c55e;
+  color: white;
+}
+.accept-btn:hover {
+  background: #16a34a;
+}
+
+.reject-btn {
+  background: #ef4444;
+  color: white;
+}
+.reject-btn:hover {
+  background: #dc2626;
+}
+
+.add-user-btn {
+  background: #ffffff;
+  color: #2563eb;
+}
+.add-user-btn:hover {
+  background: #f0f9ff;
+}
+
+.mute-btn {
+  background: #eab308;
+  color: white;
+}
+.mute-btn:hover {
+  background: #ca8a04;
+}
+
+.share-btn {
+  background: #3b82f6;
+  color: white;
+}
+.share-btn:hover {
+  background: #2563eb;
+}
+
+.stop-share-btn {
+  background: #ef4444;
+  color: white;
+}
+.stop-share-btn:hover {
+  background: #dc2626;
+}
+
+.minimize-btn {
+  background: #475569;
+  color: white;
+}
+.minimize-btn:hover {
+  background: #334155;
+}
+
+.hangup-btn {
+  background: #dc2626;
+  color: white;
+}
+.hangup-btn:hover {
+  background: #b91c1c;
+}
+
+/* === Minimized Bubble === */
+.minimized-bubble {
+  position: fixed;
+  top: 12rem;
+  right: 1rem;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #ffffff;
+  color: #111827;
+  border: 1px solid #d1d5db;
+  border-radius: 9999px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  padding: 0.5rem 0.75rem;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.minimized-bubble:hover {
+  background: #f3f4f6;
+  transform: scale(1.02);
+}
+
+.bubble-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.bubble-name {
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+/* === Animation === */
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
