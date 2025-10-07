@@ -1,3 +1,4 @@
+/* Overlay for forward modal */
 .forward-overlay {
   position: fixed;
   inset: 0;
@@ -9,6 +10,7 @@
   padding: 1rem;
 }
 
+/* Modal container */
 .forward-modal {
   background: #fff;
   color: #000;
@@ -24,12 +26,14 @@
   position: relative;
 }
 
+/* Modal title */
 .forward-title {
   font-size: 20px;
   font-weight: 600;
   margin-bottom: 1rem;
 }
 
+/* Modal scrollable body */
 .forward-body {
   overflow-y: auto;
   padding-right: 5px;
@@ -37,6 +41,7 @@
   max-height: 55vh;
 }
 
+/* Search box */
 .search-container {
   position: relative;
   margin-bottom: 20px;
@@ -48,11 +53,6 @@
   left: 12px;
   transform: translateY(-50%);
   color: #777;
-}
-
-.search-icon-inner {
-  width: 20px;
-  height: 20px;
 }
 
 .search-input {
@@ -68,6 +68,7 @@
   border-color: #2563eb;
 }
 
+/* Section title */
 .section {
   margin-bottom: 16px;
 }
@@ -79,12 +80,14 @@
   margin-bottom: 6px;
 }
 
+/* List of items (users/groups) */
 .section-list {
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
 
+/* Each list item */
 .list-item {
   display: flex;
   align-items: center;
@@ -102,6 +105,7 @@
   background: #e0e7ff;
 }
 
+/* Avatar */
 .item-avatar {
   width: 38px;
   height: 38px;
@@ -113,23 +117,56 @@
 }
 
 .item-image {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
   border-radius: 50%;
 }
 
-.item-name {
+/* Avatar fallback (initial letter) */
+.avatar-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  font-weight: 600;
+  color: #fff;
+  background: #888;
+  border-radius: 50%;
+}
+
+/* Name & email column */
+.item-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   margin-left: 10px;
-  font-size: 14px;
-  font-weight: 500;
-  color: #222;
   flex-grow: 1;
 }
 
+.item-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: #222;
+  margin-left: 15px;
+}
+
+.item-email {
+  font-size: 11px;
+  color: #555;
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Selection check icon */
 .item-check {
   color: #2563eb;
   font-size: 20px;
 }
 
+/* Modal footer buttons */
 .forward-footer {
   border-top: 1px solid #ddd;
   margin-top: 12px;
@@ -167,4 +204,8 @@
 .btn-send.disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+.item-group-name {
+  font-weight: 100;
+  font-size: 13px;
 }

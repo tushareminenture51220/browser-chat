@@ -16,7 +16,7 @@ const FloatingMenu = React.forwardRef(
     };
 
     const handleForward = () => {
-      onForward(); // ✅ trigger modal open
+      onForward();
       closeMenu();
     };
 

@@ -11,7 +11,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import "./ForwardMessageModal.css";
 
-const ForwardMessageModal = ({ onClose, message, socket, onForwarded }) => {
+const ForwardMessageModal = ({ onClose, message, onForwarded }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedItems, setSelectedItems] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -150,11 +150,13 @@ const ForwardMessageModal = ({ onClose, message, socket, onForwarded }) => {
                       onClick={() => handleSelectItem(user, "user")}
                       className={`list-item ${isSelected ? "selected" : ""}`}
                     >
-                      <div className="chat-avatar">
+                      {/* Avatar */}
+                      <div className="item-avatar">
                         {user?.user_profile ? (
                           <img
                             src={`https://eminenture.live/public/chatting-files/${user.user_profile}`}
                             alt={user?.first_name || "User"}
+                            className="item-image"
                             onError={(e) => (e.target.style.display = "none")}
                           />
                         ) : (
@@ -164,7 +166,12 @@ const ForwardMessageModal = ({ onClose, message, socket, onForwarded }) => {
                         )}
                       </div>
 
-                      <span className="item-name">{displayName}</span>
+                      {/* Name & Email */}
+                      <div className="item-info">
+                        <span className="item-group-name">{displayName}</span>
+                        <span className="item-email">{user.email}</span>
+                      </div>
+
                       {isSelected && (
                         <Icon icon="mdi:check-circle" className="item-check" />
                       )}
@@ -195,13 +202,12 @@ const ForwardMessageModal = ({ onClose, message, socket, onForwarded }) => {
                           {group?.groupImage ? (
                             <img
                               src={`https://eminenture.live/public/chatting-files/${group.groupImage}`}
-                              alt={group?.group_name || "Group"}
+                              alt={group?.name || "Group"}
                               onError={(e) => (e.target.style.display = "none")}
                             />
                           ) : (
                             <span className="avatar-fallback">
-                              {group?.group_name?.charAt(0)?.toUpperCase() ||
-                                "G"}
+                              {group?.name?.charAt(0)?.toUpperCase() || "G"}
                             </span>
                           )}
                         </div>

@@ -1,25 +1,39 @@
 .selected-user-preview {
-  margin-bottom: 6px;
+  margin-bottom: 8px;
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 8px;
 }
 
 .user-chip {
   display: inline-flex;
   align-items: center;
-  padding: 4px 8px;
-  background-color: #fee2e2; /* light red */
-  color: #991b1b; /* dark red text */
+  padding: 6px 10px;
+  background-color: #4f46e5; /* nice purple background */
+  color: #ffffff; /* white text for better contrast */
   font-size: 14px;
   font-weight: 500;
-  border-radius: 4px;
-  transition: background 0.2s ease;
+  border-radius: 20px; /* pill shape for modern look */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  transition: all 0.2s ease;
+}
+
+.user-chip:hover {
+  background-color: #4338ca; /* slightly darker on hover */
 }
 
 .user-avatar {
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
-  margin-right: 6px;
+  margin-right: 8px;
+  object-fit: cover;
+  background-color: #e5e7eb; /* fallback color if no image */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: #4f46e5; /* initial for users without avatar */
 }
 
 .user-name {
@@ -28,22 +42,22 @@
 
 .remove-btn {
   border: none;
-  background: transparent;
+  background: rgba(255, 255, 255, 0.2);
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   padding: 2px;
+  border-radius: 50%;
   transition: all 0.2s ease;
 }
 
 .remove-btn:hover {
-  background-color: #fecaca;
-  color: #7f1d1d;
-  border-radius: 3px;
+  background-color: rgba(255, 255, 255, 0.4);
+  color: #fff;
 }
 
 .remove-icon {
   width: 16px;
   height: 16px;
-  color: #dc2626;
+  color: #fff;
 }

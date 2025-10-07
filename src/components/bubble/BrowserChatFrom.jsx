@@ -14,7 +14,7 @@ import "./BrowserChatFrom.css";
 import "../floatMenu/menu.css";
 import ForwardMessageModal from "../floatMenu/ForwardMessageModal";
 
-const BrowserChatFrom = ({ msg, socket }) => {
+const BrowserChatFrom = ({ msg }) => {
   const {
     message_text,
     created_at,
@@ -29,7 +29,7 @@ const BrowserChatFrom = ({ msg, socket }) => {
   const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
   const [editVisible, setEditVisible] = useState(false);
   const [deleteVisible, setDeleteVisible] = useState(false);
-  const [forwardVisible, setForwardVisible] = useState(false); // ✅ new forward modal state
+  const [forwardVisible, setForwardVisible] = useState(false);
 
   const [currentMessage, setCurrentMessage] = useState(msg);
   const formattedTime = useFormattedTime(created_at);
@@ -148,7 +148,7 @@ const BrowserChatFrom = ({ msg, socket }) => {
           }}
           onEdit={handleEditClick}
           onDelete={handleDeleteClick}
-          onForward={handleForwardClick} // ✅ add forward click
+          onForward={handleForwardClick}
         />
       )}
 
@@ -171,7 +171,6 @@ const BrowserChatFrom = ({ msg, socket }) => {
       {forwardVisible && (
         <ForwardMessageModal
           message={currentMessage}
-          socket={socket}
           onClose={() => setForwardVisible(false)}
           onForwarded={() => setForwardVisible(false)}
         />
