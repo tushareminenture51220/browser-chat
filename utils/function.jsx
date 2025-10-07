@@ -140,7 +140,6 @@ const startOneToOneAudioCall = async ({
   dispatch,
 }) => {
   // 1️⃣ Update Redux
-  // console.log("userData", userData)
   dispatch(
     startOutgoingCall({
       receiverId: userData.id,

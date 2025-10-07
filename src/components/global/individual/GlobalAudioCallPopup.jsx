@@ -32,6 +32,7 @@ const GlobalAudioCallPopup = () => {
   const [remoteScreenTrack, setRemoteScreenTrack] = useState();
   const [currentUser, setCurrentUser] = useState(null);
   const [isMuted, setIsMuted] = useState(false);
+  const [remoteAudioTracks, setRemoteAudioTracks] = useState({});
 
   const audioContainerRef = useRef(null);
 
@@ -47,7 +48,6 @@ const GlobalAudioCallPopup = () => {
     receiverImage,
     roomName,
   } = callData || {};
-  console.log("calldata", callData)
 
   // ✅ Get current user ID from cookies
   useEffect(() => {
@@ -153,6 +153,18 @@ const GlobalAudioCallPopup = () => {
           audioEl.autoplay = true;
           audioEl.playsInline = true;
           audioContainerRef.current.appendChild(audioEl);
+
+          // ✅ Defensive check
+          const participantId = participant?.identity
+            ? `user-${participant.identity.replace("user-", "")}`
+            : `participant-${
+                participant?.sid || Math.random().toString(36).slice(2, 8)
+              }`;
+
+          setRemoteAudioTracks((prev) => ({
+            ...prev,
+            [participantId]: track,
+          }));
         }
 
         if (track.kind === "video") {
@@ -162,10 +174,21 @@ const GlobalAudioCallPopup = () => {
       });
 
       // Also handle when track is unsubscribed (remote participant stops sharing)
-      joinedRoom.on("trackUnsubscribed", (track) => {
+      joinedRoom.on("trackUnsubscribed", (track, participant) => {
         if (track.kind === "video") {
           setRemoteScreenTrack(null);
           dispatch(setIsRemoteSharing(false));
+        }
+        if (track.kind === "audio") {
+          const participantId = participant?.identity
+            ? `user-${participant.identity.replace("user-", "")}`
+            : `participant-${participant?.sid || "unknown"}`;
+
+          setRemoteAudioTracks((prev) => {
+            const updated = { ...prev };
+            delete updated[participantId];
+            return updated;
+          });
         }
       });
 
@@ -508,10 +531,12 @@ const GlobalAudioCallPopup = () => {
   if (remoteScreenTrack) {
     return (
       <GroupScreenShare
+        callType="oneOnone"
         remoteScreenTrack={remoteScreenTrack}
         handleHangUp={handleHangUp}
         toggleMute={toggleMute}
         isMuted={localTrack ? !localTrack.isEnabled : false}
+        remoteAudioTracks={remoteAudioTracks}
       />
     );
   }

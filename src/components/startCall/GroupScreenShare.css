@@ -9,6 +9,18 @@
   z-index: 999;
 }
 
+/* Fullscreen video for 1-on-1 calls */
+.video-full-one {
+  position: fixed;
+  inset: 0;
+  width: 100%; /* 🔹 Full width for one-on-one */
+  height: 100%;
+  object-fit: contain;
+  background: black;
+  z-index: 999;
+}
+
+
 .video-minimized {
   position: fixed;
   top: 12px;
@@ -95,9 +107,9 @@
 
 /* Buttons */
 .mute-btn,
-.minimize-btn,
 .maximize-btn,
 .hangup-btn,
+.minimizing-btn,
 .hangup-mini-btn {
   position: relative;
   padding: 10px;
@@ -119,12 +131,6 @@
   border-color: #3b82f6;
 }
 
-.minimize-btn {
-  background: #2563eb;
-  border-color: #3b82f6;
-  color: white;
-}
-
 .maximize-btn {
   background: #2563eb;
   border-color: #3b82f6;
@@ -138,10 +144,17 @@
   color: white;
 }
 
+
+.minimizing-btn {
+  background: #2563eb;
+  border-color: #3b82f6;
+  color: white;
+}
+
 .mute-btn:hover,
-.minimize-btn:hover,
 .maximize-btn:hover,
 .hangup-btn:hover,
+.minimizing-btn:hover,
 .hangup-mini-btn:hover {
   transform: scale(1.05);
 }

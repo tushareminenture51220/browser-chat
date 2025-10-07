@@ -1,5 +1,3 @@
-"use client";
-
 import React, { useEffect, useState } from "react";
 import { Icon } from "@iconify/react";
 import { useSelector } from "react-redux";

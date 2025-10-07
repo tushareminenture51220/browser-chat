@@ -13,6 +13,7 @@ const GroupScreenShare = ({
   isMuted,
   callerId,
   remoteAudioTracks,
+  callType = "groupShare",
 }) => {
   const remoteScreenRef = useRef(null);
   const nodeRef = useRef(null);
@@ -26,13 +27,10 @@ const GroupScreenShare = ({
   useEffect(() => {
     if (remoteScreenTrack && remoteScreenRef.current) {
       remoteScreenTrack.attach(remoteScreenRef.current);
-      return () => {
-        remoteScreenTrack.detach(remoteScreenRef.current);
-      };
+      return () => remoteScreenTrack.detach(remoteScreenRef.current);
     }
   }, [remoteScreenTrack]);
 
-  // Sort participants so leader is always first
   const sortedParticipants = useMemo(() => {
     return [...activeGroupParticipants].sort((a, b) => {
       if (a.userId === callerId) return -1;
@@ -43,17 +41,23 @@ const GroupScreenShare = ({
 
   return (
     <>
-      {/* Shared screen video */}
+      {/* Shared Screen Video */}
       <video
         autoPlay
         playsInline
         ref={remoteScreenRef}
         muted
         loop
-        className={isMinimized ? "video-minimized" : "video-full"}
+        className={`${
+          isMinimized
+            ? "video-minimized"
+            : callType === "oneOnone"
+            ? "video-full-one"
+            : "video-full"
+        }`}
       />
 
-      {isMinimized ? (
+      {isMinimized && (
         <div ref={nodeRef} className="mini-container">
           <div className="mini-controls">
             <button
@@ -72,57 +76,48 @@ const GroupScreenShare = ({
             </button>
           </div>
         </div>
-      ) : (
-        // Full screen view with sidebar participants + controls
-        <div className="fullscreen-container">
-          {/* Participants Sidebar */}
-          <div className="participants-sidebar">
-            {sortedParticipants.map((user) => (
-              <ParticipantCard
-                key={user.userId}
-                user={user}
-                callerId={callerId}
-                isUserMuted={mutedUsers[user.userId] ?? user?.isMuted}
-                remoteAudioTrack={remoteAudioTracks[`user-${user.userId}`]}
-                variant="sidebar"
-              />
-            ))}
-          </div>
+      )}
 
-          {/* Bottom Controls */}
-          <div className="controls-container">
-            <div className="controls-box">
-              {/* Mute Button */}
-              <button
-                onClick={toggleMute}
-                title={isMuted ? "Unmute" : "Mute"}
-                className={`mute-btn ${isMuted ? "muted" : ""}`}
-              >
-                <Icon
-                  icon={isMuted ? "ic:baseline-mic-off" : "ic:baseline-mic"}
-                  className="icon-md"
-                />
-              </button>
+      {/* Bottom Controls — always visible */}
+      <div className="controls-container">
+        <div className="controls-box">
+          {/* Mic Button */}
+          <button
+            onClick={toggleMute}
+            title={isMuted ? "Unmute" : "Mute"}
+            className={`mute-btn ${isMuted ? "muted" : ""}`}
+          >
+            <Icon
+              icon={isMuted ? "ic:baseline-mic-off" : "ic:baseline-mic"}
+              className="icon-md"
+            />
+          </button>
 
-              {/* Minimize Button */}
-              <button
-                onClick={() => setIsMinimized(true)}
-                title="Minimize"
-                className="minimize-btn"
-              >
-                <Icon icon="ic:round-close-fullscreen" className="icon-md" />
-              </button>
+          {/* Minimize Button */}
+          <button onClick={() => setIsMinimized(true)} title="Minimize" className="minimizing-btn">
+            <Icon icon="ic:round-close-fullscreen" className="icon-md" />
+          </button>
 
-              {/* Hang Up Button */}
-              <button
-                onClick={handleHangUp}
-                title="Hang Up"
-                className="hangup-btn"
-              >
-                <Icon icon="mdi:phone-hangup" className="icon-md" />
-              </button>
-            </div>
-          </div>
+          {/* Hang Up Button */}
+          <button onClick={handleHangUp} title="Hang Up" className="hangup-btn">
+            <Icon icon="mdi:phone-hangup" className="icon-md" />
+          </button>
+        </div>
+      </div>
+
+      {/* Participants Sidebar — only for group calls */}
+      {callType !== "oneOnone" && (
+        <div className="participants-sidebar">
+          {sortedParticipants.map((user) => (
+            <ParticipantCard
+              key={user.userId}
+              user={user}
+              callerId={callerId}
+              isUserMuted={mutedUsers[user.userId] ?? user?.isMuted}
+              remoteAudioTrack={remoteAudioTracks[`user-${user.userId}`]}
+              variant="sidebar"
+            />
+          ))}
         </div>
       )}
     </>
