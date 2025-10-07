@@ -65,8 +65,8 @@
 }
 
 /* Deleted messages */
-.chat-bubble-container .chat-message-text.deleted,
-.chat-bubble-container.from .chat-message-text.deleted {
+.chat-bubble-container .chat-message-text.chat-deleted,
+.chat-bubble-container.from .chat-message-text.chat-deleted {
   font-style: italic;
   color: #ffffff;
 }
