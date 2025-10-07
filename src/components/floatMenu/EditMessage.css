@@ -1,0 +1,165 @@
+/* Overlay */
+.edit-message-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 50;
+  animation: fade-in 0.15s ease-in-out;
+}
+
+/* Container */
+.edit-message-container {
+  background: #fff;
+  color: #1f2937;
+  padding: 24px;
+  border-radius: 24px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  max-width: 400px;
+  animation: scale-in 0.15s ease-in-out;
+}
+
+/* Header */
+.edit-message-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.edit-message-icon {
+  background: #dbeafe;
+  padding: 8px;
+  border-radius: 12px;
+  margin-right: 12px;
+}
+
+.edit-message-icon .icon {
+  width: 20px;
+  height: 20px;
+  color: #2563eb;
+}
+
+.edit-message-header h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+/* Textarea */
+.edit-message-textarea-wrapper {
+  position: relative;
+  margin-bottom: 8px;
+}
+
+.edit-message-textarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 16px;
+  border-radius: 20px;
+  border: 1px solid #d1d5db;
+  resize: none;
+  background: #fff;
+  color: #111827;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s;
+}
+
+.edit-message-textarea:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+.char-count {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  font-size: 12px;
+  color: #6b7280;
+  background: #fff;
+  padding: 2px 6px;
+  border-radius: 8px;
+}
+
+/* Note */
+.edit-message-note {
+  font-size: 12px;
+  color: #6b7280;
+  margin-bottom: 24px;
+}
+
+/* Buttons */
+.edit-message-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.btn-cancel,
+.btn-save {
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+  font-weight: 500;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+
+.btn-cancel {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.btn-cancel:hover {
+  background: #e5e7eb;
+}
+
+.btn-save {
+  background: #2563eb;
+  color: white;
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.4);
+}
+
+.btn-save:hover {
+  background: #1d4ed8;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+}
+
+.btn-save:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-icon {
+  width: 16px;
+  height: 16px;
+  margin-right: 8px;
+}
+
+/* Spinner */
+.spinner {
+  width: 16px;
+  height: 16px;
+  margin-right: 8px;
+  animation: spin 1s linear infinite;
+}
+
+/* Animations */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scale-in {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}

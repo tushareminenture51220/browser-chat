@@ -1,0 +1,145 @@
+/* Overlay */
+.delete-message-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 50;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 0.15s ease-in-out;
+}
+
+/* Container */
+.delete-message-container {
+  background: #fff;
+  padding: 24px;
+  border-radius: 24px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+  animation: scaleIn 0.15s ease-in-out;
+}
+
+/* Header */
+.delete-message-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.delete-message-icon {
+  background: red;
+  padding: 8px;
+  border-radius: 12px;
+  margin-right: 12px;
+}
+
+
+.delete-message-header h2 {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #111827;
+}
+
+/* Warning */
+.delete-message-warning {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+.warning-title {
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  color: #b91c1c;
+}
+
+.warning-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 6px;
+  color: #dc2626;
+}
+
+.warning-text {
+  margin-top: 8px;
+  color: #374151;
+  font-size: 0.95rem;
+}
+
+/* Buttons */
+.delete-message-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.btn-cancel, .btn-delete {
+  display: flex;
+  align-items: center;
+  padding: 10px 18px;
+  border-radius: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+.btn-cancel {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.btn-cancel:hover {
+  background: #d1d5db;
+}
+
+.btn-delete {
+  background: #dc2626;
+  color: #fff;
+}
+
+.btn-delete:hover {
+  background: #b91c1c;
+}
+
+.btn-icon {
+  width: 16px;
+  height: 16px;
+  margin-right: 6px;
+}
+
+/* Spinner */
+.spinner {
+  width: 18px;
+  height: 18px;
+  margin-right: 6px;
+  animation: spin 1s linear infinite;
+}
+
+.spinner-circle {
+  stroke-opacity: 0.25;
+}
+
+.spinner-path {
+  opacity: 0.75;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

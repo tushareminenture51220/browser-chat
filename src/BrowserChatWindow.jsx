@@ -127,7 +127,7 @@ const BrowserChatWindow = ({ chatUser, onClose, index }) => {
       if (relevant) setMessages((prev) => [...prev, data]);
     };
 
-    // Handle group messages (existing)
+    // Handle group messages
     const handleGroupMsg = (data) => {
       if (
         isGroup &&
@@ -136,6 +136,23 @@ const BrowserChatWindow = ({ chatUser, onClose, index }) => {
       ) {
         setMessages((prev) => [...prev, data]);
       }
+    };
+
+    // Handle message deleted
+    const handleDeleted = (deletedMsg) => {
+      setMessages((prev) =>
+        prev.map((msg) =>
+          String(msg.id) === String(deletedMsg.id)
+            ? {
+                ...msg,
+                message_text: "This message was deleted",
+                is_deleted: true,
+                attachment_name: null,
+                attachment_size: null,
+              }
+            : msg
+        )
+      );
     };
 
     // Handle group call ended
@@ -151,41 +168,31 @@ const BrowserChatWindow = ({ chatUser, onClose, index }) => {
       }
     };
 
+    // Saved message handler
     const handleSaved = (savedMsg) => {
-      // 1:1 chat
       if (!isGroup) {
         const relevant =
           (Number(savedMsg.sender_id) === Number(chatUser.id) &&
             Number(savedMsg.receiver_id) === Number(LoggedInUser.id)) ||
           (Number(savedMsg.receiver_id) === Number(chatUser.id) &&
             Number(savedMsg.sender_id) === Number(LoggedInUser.id));
-
-        if (!relevant) return; // ignore messages not for this chat
+        if (!relevant) return;
       }
-
-      // Group chat
       if (isGroup && savedMsg.group_id !== chatUser.id) return;
 
       setMessages((prev) => {
-        // Case 1: replace tempId
         if (savedMsg.tempId) {
           const exists = prev.some((msg) => msg.tempId === savedMsg.tempId);
-          if (exists) {
+          if (exists)
             return prev.map((msg) =>
               msg.tempId === savedMsg.tempId ? savedMsg : msg
             );
-          }
         }
-
-        // Case 2: append new if not found
         const alreadyExists = prev.some(
           (msg) => String(msg.id) === String(savedMsg.id)
         );
-        if (!alreadyExists) {
-          return [...prev, savedMsg];
-        }
-
-        return prev; // do nothing if duplicate
+        if (!alreadyExists) return [...prev, savedMsg];
+        return prev;
       });
     };
 
@@ -194,6 +201,7 @@ const BrowserChatWindow = ({ chatUser, onClose, index }) => {
     socket.current.on("message-saved", handleSaved);
     socket.current.on("receive-group-msg", handleGroupMsg);
     socket.current.on("group-call-ended", handleGroupCallEnded);
+    socket.current.on("message-deleted", handleDeleted); // ✅ new listener
 
     // Cleanup
     return () => {
@@ -201,6 +209,7 @@ const BrowserChatWindow = ({ chatUser, onClose, index }) => {
       socket.current.off("message-saved", handleSaved);
       socket.current.off("receive-group-msg", handleGroupMsg);
       socket.current.off("group-call-ended", handleGroupCallEnded);
+      socket.current.off("message-deleted", handleDeleted); // ✅ remove listener
     };
   }, [socket.current, chatUser?.id, LoggedInUser?.id, isGroup]);
 

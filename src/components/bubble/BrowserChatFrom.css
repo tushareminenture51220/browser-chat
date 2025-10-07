@@ -68,7 +68,7 @@
 .chat-bubble-container .chat-message-text.deleted,
 .chat-bubble-container.from .chat-message-text.deleted {
   font-style: italic;
-  color: rgba(156, 163, 175, 0.9);
+  color: #ffffff;
 }
 
 /* Timestamp OUTSIDE bubble for all messages */

@@ -7,9 +7,11 @@ import ImagePreview from "../filePreview/ImagePreview";
 import VideoPreview from "../filePreview/VideoPreview";
 import FilePreview from "../filePreview/FilePreview";
 import CallMessageCard from "./CallMessageCard";
+import FloatingMenu from "../floatMenu/FloatingMenu";
 import "./BrowserChatFrom.css";
 import "../floatMenu/menu.css";
-import FloatingMenu from "../floatMenu/FloatingMenu";
+import EditMessage from "../floatMenu/EditMessage";
+import DeleteMessage from "../floatMenu/DeleteMessage";
 
 const BrowserChatFrom = ({ msg }) => {
   const {
@@ -24,6 +26,9 @@ const BrowserChatFrom = ({ msg }) => {
   const [showTime, setShowTime] = useState(false);
   const [openMenuId, setOpenMenuId] = useState(null);
   const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
+  const [editVisible, setEditVisible] = useState(false); // ✅ edit popup
+  const [currentMessage, setCurrentMessage] = useState(msg); // track updated message
+  const [deleteVisible, setDeleteVisible] = useState(false);
 
   const formattedTime = useFormattedTime(created_at);
   const menuRef = useRef(null);
@@ -31,36 +36,53 @@ const BrowserChatFrom = ({ msg }) => {
 
   const toggleShowTime = () => setShowTime((prev) => !prev);
 
-  const shouldRenderBubble = is_deleted || message_text;
+  const shouldRenderBubble = is_deleted || currentMessage.message_text;
 
   const handleMenuToggle = (e) => {
     const rect = e.currentTarget.getBoundingClientRect();
-    const menuHeight = 180; // approximate height of your menu
+    const menuHeight = 180;
     const menuWidth = 160;
 
     let top = rect.bottom + 2;
     let left = rect.left - 150;
 
-    // Adjust top if it goes beyond viewport
     if (top + menuHeight > window.innerHeight) {
-      top = rect.top - menuHeight - 6; // show above the button instead
+      top = rect.top - menuHeight - 6;
     }
-
-    // Adjust left if it goes beyond viewport width
     if (left + menuWidth > window.innerWidth) {
-      left = window.innerWidth - menuWidth - 10; // shift left inside viewport
+      left = window.innerWidth - menuWidth - 10;
     }
-    if (left < 0) left = 10; // minimum left margin
+    if (left < 0) left = 10;
 
     setMenuPosition({ top, left });
     setOpenMenuId((prev) => (prev === id ? null : id));
   };
 
-  const isMenuOpen = openMenuId === id;
+  const handleEditClick = () => {
+    setEditVisible(true);
+    setOpenMenuId(null); // close menu
+  };
+
+  const handleMessageUpdate = (updatedMessage) => {
+    setCurrentMessage(updatedMessage); // update message in UI
+    setEditVisible(false); // close edit popup
+  };
+
+  const handleDeleteClick = () => {
+    setDeleteVisible(true); // show delete popup
+    setOpenMenuId(null); // close menu
+  };
+
+  // Callback after delete
+  const handleMessageDeleted = (deletedMessageId) => {
+    setCurrentMessage((prev) =>
+      prev.id === deletedMessageId ? { ...prev, is_deleted: true } : prev
+    );
+    setDeleteVisible(false);
+  };
 
   useEffect(() => {
     const handleClickOutside = (e) => {
-      // If click is NOT inside the menu AND NOT on the menu button
       if (
         menuRef.current &&
         !menuRef.current.contains(e.target) &&
@@ -70,12 +92,8 @@ const BrowserChatFrom = ({ msg }) => {
         setOpenMenuId(null);
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   return (
@@ -85,7 +103,7 @@ const BrowserChatFrom = ({ msg }) => {
           className="chat-bubble-container from group"
           onClick={toggleShowTime}
         >
-          {!is_deleted && message_text && (
+          {!is_deleted && currentMessage.message_text && (
             <button
               ref={buttonRef}
               className="menu-button-left"
@@ -95,8 +113,10 @@ const BrowserChatFrom = ({ msg }) => {
             </button>
           )}
 
-          <span className={`chat-message-text ${is_deleted ? "deleted" : ""}`}>
-            {is_deleted ? "This message was deleted" : message_text}
+          <span className={`chat-message-text ${is_deleted ? "chat-deleted" : ""}`}>
+            {is_deleted
+              ? "This message was deleted"
+              : currentMessage.message_text}
           </span>
         </div>
       )}
@@ -123,16 +143,34 @@ const BrowserChatFrom = ({ msg }) => {
         </>
       )}
 
-      {isMenuOpen && (
+      {openMenuId === id && (
         <FloatingMenu
           ref={menuRef}
-          message_text={message_text}
+          message_text={currentMessage.message_text}
           closeMenu={() => setOpenMenuId(null)}
           style={{
             top: menuPosition.top,
             left: menuPosition.left,
             position: "fixed",
           }}
+          onEdit={handleEditClick}
+          onDelete={handleDeleteClick} // ✅ pass delete callback
+        />
+      )}
+
+      {editVisible && (
+        <EditMessage
+          message={currentMessage}
+          onClose={() => setEditVisible(false)}
+          onMessageUpdated={handleMessageUpdate} // ✅ update message
+        />
+      )}
+
+      {deleteVisible && (
+        <DeleteMessage
+          message={currentMessage}
+          onClose={() => setDeleteVisible(false)}
+          onMessageDeleted={handleMessageDeleted} // update bubble UI
         />
       )}
     </div>
