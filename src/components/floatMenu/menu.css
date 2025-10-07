@@ -1,0 +1,83 @@
+.floating-menu-modern {
+  position: fixed;
+  width: 160px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  padding: 6px 0;
+  animation: fadeIn 0.15s ease-in-out;
+  font-family: 'Inter', sans-serif;
+}
+
+.floating-menu-modern button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  width: 100%;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.floating-menu-modern button:hover {
+  background: #f5f5f5;
+  color: #000;
+  border-radius: 8px;
+}
+
+.menu-button-left {
+  position: absolute;
+  left: -28px;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 4px;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  color: #555;
+  opacity: 0;             /* hide by default */
+  pointer-events: none;   /* prevent interaction when hidden */
+  transition: all 0.2s ease;
+}
+
+/* Show icon only on hover */
+.chat-bubble-container.group:hover .menu-button-left {
+  opacity: 1;
+  pointer-events: auto;  /* enable click when visible */
+}
+
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px);}
+  to { opacity: 1; transform: translateY(0);}
+}
+
+/* BrowserChatBubble.css or menu.css */
+.menu-button-right {
+  position: absolute;
+  right: -28px;           /* move to right side */
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 4px;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  color: #555;
+  opacity: 0;             /* hide by default */
+  pointer-events: none;   /* prevent interaction when hidden */
+  transition: all 0.2s ease;
+}
+
+/* Show icon only on hover */
+.chat-bubble-container.group:hover .menu-button-right {
+  opacity: 1;
+  pointer-events: auto;  /* enable click when visible */
+}

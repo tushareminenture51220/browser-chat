@@ -10,6 +10,8 @@ import ImagePreview from "../filePreview/ImagePreview";
 import VideoPreview from "../filePreview/VideoPreview";
 import FilePreview from "../filePreview/FilePreview";
 import CallMessageCard from "./CallMessageCard";
+import "../floatMenu/menu.css"
+import FloatingMenu from "../floatMenu/FloatingMenu";
 
 const BrowserChatBubble = ({ msg }) => {
   const {
@@ -26,10 +28,15 @@ const BrowserChatBubble = ({ msg }) => {
   const [showTime, setShowTime] = useState(false);
   const [LoggedInUser, setLoggedInUser] = useState(null);
   const [forwardedUser, setForwardedUser] = useState(null);
+  const [openMenuId, setOpenMenuId] = useState(null);
+  const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
 
   const dispatch = useDispatch();
   const { usersData = [] } = useSelector((store) => store.usersData);
   const formattedTime = useFormattedTime(created_at);
+
+  const menuRef = useRef(null);
+  const buttonRef = useRef(null);
 
   useEffect(() => {
     const LoggedInUserData = Cookies.get("HRMS_LoggedIn_UserData")
@@ -40,7 +47,6 @@ const BrowserChatBubble = ({ msg }) => {
 
   useEffect(() => {
     if (!forwarded_by) return;
-
     if (String(forwarded_by) === String(LoggedInUser?.id)) {
       setForwardedUser(LoggedInUser);
     } else {
@@ -50,6 +56,44 @@ const BrowserChatBubble = ({ msg }) => {
   }, [forwarded_by, LoggedInUser, usersData]);
 
   const toggleShowTime = () => setShowTime((prev) => !prev);
+
+  const handleMenuToggle = (e) => {
+    e.stopPropagation(); // prevent bubble click toggle
+    const rect = e.currentTarget.getBoundingClientRect();
+    const menuHeight = 180;
+    const menuWidth = 160;
+
+    let top = rect.bottom + 4; // slight bottom offset
+    let left = rect.left + 20;
+
+    if (top + menuHeight > window.innerHeight) {
+      top = rect.top - menuHeight - 6; // show above if overflow
+    }
+    if (left + menuWidth > window.innerWidth) {
+      left = window.innerWidth - menuWidth - 10;
+    }
+    if (left < 0) left = 10;
+
+    setMenuPosition({ top, left });
+    setOpenMenuId((prev) => (prev === id ? null : id));
+  };
+
+  const isMenuOpen = openMenuId === id;
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(e.target) &&
+        buttonRef.current &&
+        !buttonRef.current.contains(e.target)
+      ) {
+        setOpenMenuId(null);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [openMenuId]);
 
   const renderMessageWithMentions = (text, usersData) => {
     if (!text) return null;
@@ -76,13 +120,23 @@ const BrowserChatBubble = ({ msg }) => {
     return rendered;
   };
 
-  // Only render bubble if there is message text or if deleted
   const shouldRenderBubble = is_deleted || message_text;
 
   return (
     <div className="chat-bubble-row user">
       {shouldRenderBubble && (
-        <div className="chat-bubble-container" onClick={toggleShowTime}>
+        <div className="chat-bubble-container group" onClick={toggleShowTime}>
+          {/* Floating menu button */}
+          {!is_deleted && message_text && (
+            <button
+              ref={buttonRef}
+              className="menu-button-right"
+              onClick={handleMenuToggle}
+            >
+              <Icon icon="mdi:dots-vertical" width="20" height="20" />
+            </button>
+          )}
+
           {is_forwarded === 1 && (
             <div className="chat-forwarded">
               <ArrowRight size={14} />
@@ -100,26 +154,23 @@ const BrowserChatBubble = ({ msg }) => {
 
       {meeting_link && <CallMessageCard msg={msg} />}
 
-      {/* ⬇️ timestamp OUTSIDE bubble */}
       {showTime && <div className="chat-timestamp">{formattedTime}</div>}
 
-      {/* Attachments */}
       {attachment_name && (
         <>
-          <ImagePreview
-            attachment_name={attachment_name}
-            is_deleted={is_deleted}
-          />
-          <VideoPreview
-            attachment_name={attachment_name}
-            is_deleted={is_deleted}
-          />
-          <FilePreview
-            id={id}
-            attachment_name={attachment_name}
-            is_deleted={is_deleted}
-          />
+          <ImagePreview attachment_name={attachment_name} is_deleted={is_deleted} />
+          <VideoPreview attachment_name={attachment_name} is_deleted={is_deleted} />
+          <FilePreview id={id} attachment_name={attachment_name} is_deleted={is_deleted} />
         </>
+      )}
+
+      {isMenuOpen && (
+        <FloatingMenu
+          message_text={message_text}
+          closeMenu={() => setOpenMenuId(null)}
+          style={{ top: menuPosition.top, left: menuPosition.left, position: "fixed" }}
+          ref={menuRef}
+        />
       )}
     </div>
   );
