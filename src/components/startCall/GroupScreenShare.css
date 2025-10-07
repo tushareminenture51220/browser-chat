@@ -9,17 +9,15 @@
   z-index: 999;
 }
 
-/* Fullscreen video for 1-on-1 calls */
 .video-full-one {
   position: fixed;
   inset: 0;
-  width: 100%; /* 🔹 Full width for one-on-one */
+  width: 100%; /* Full width for one-on-one */
   height: 100%;
   object-fit: contain;
   background: black;
   z-index: 999;
 }
-
 
 .video-minimized {
   position: fixed;
@@ -105,38 +103,42 @@
   padding: 8px 12px;
 }
 
-/* Buttons */
-.mute-btn,
-.maximize-btn,
-.hangup-btn,
-.minimizing-btn,
-.hangup-mini-btn {
-  position: relative;
-  padding: 10px;
+/* Buttons: unified style */
+.controls-box button {
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   border: 1px solid transparent;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-  cursor: pointer;
-  transition: all 0.2s ease-in-out;
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out, border-color 0.2s, color 0.2s;
+  padding: 0;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
 }
 
+/* Mic button default & muted state */
 .mute-btn {
-  border: 1px solid #4b5563;
   background: white;
+  border: 1px solid #4b5563;
+  color: #111827; /* default icon color */
 }
 .mute-btn.muted {
-  border-color: #3b82f6;
+  border: 2px solid #3b82f6; /* blue border */
+  color: #3b82f6;             /* blue icon */
+  background: white;           /* keep background white */
 }
 
-.maximize-btn {
+/* Maximize / Minimize buttons */
+.maximize-btn,
+.minimizing-btn {
   background: #2563eb;
   border-color: #3b82f6;
   color: white;
 }
 
+/* Hangup buttons */
 .hangup-btn,
 .hangup-mini-btn {
   background: #dc2626;
@@ -144,18 +146,8 @@
   color: white;
 }
 
-
-.minimizing-btn {
-  background: #2563eb;
-  border-color: #3b82f6;
-  color: white;
-}
-
-.mute-btn:hover,
-.maximize-btn:hover,
-.hangup-btn:hover,
-.minimizing-btn:hover,
-.hangup-mini-btn:hover {
+/* Hover effect for all buttons */
+.controls-box button:hover {
   transform: scale(1.05);
 }
 

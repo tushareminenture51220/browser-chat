@@ -62,7 +62,7 @@ const AcceptedGroupCall = ({
           <button
             onClick={toggleMute}
             title={isMuted ? "Unmute" : "Mute"}
-            className={`control-btn mute-btn ${isMuted ? "active" : ""}`}
+            className={`control-btn mute-mic-btn ${isMuted ? "active" : ""}`}
           >
             <Icon
               icon={isMuted ? "ic:baseline-mic-off" : "ic:baseline-mic"}
