@@ -1,9 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Icon } from "@iconify/react";
-import { PinIcon, CopyIcon, ArrowRight, Maximize2 } from "lucide-react";
-import { toast } from "react-toastify";
+import { ArrowRight } from "lucide-react";
+import { useSelector } from "react-redux";
 import Cookies from "js-cookie";
-import { useSelector, useDispatch } from "react-redux";
 import useFormattedTime from "../../../customHooks/useFormattedTime";
 import "./BrowserChatBubble.css";
 import ImagePreview from "../filePreview/ImagePreview";
@@ -31,7 +30,6 @@ const BrowserChatBubble = ({ msg }) => {
   const [openMenuId, setOpenMenuId] = useState(null);
   const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
 
-  const dispatch = useDispatch();
   const { usersData = [] } = useSelector((store) => store.usersData);
   const formattedTime = useFormattedTime(created_at);
 
@@ -39,10 +37,10 @@ const BrowserChatBubble = ({ msg }) => {
   const buttonRef = useRef(null);
 
   useEffect(() => {
-    const LoggedInUserData = Cookies.get("HRMS_LoggedIn_UserData")
+    const userData = Cookies.get("HRMS_LoggedIn_UserData")
       ? JSON.parse(Cookies.get("HRMS_LoggedIn_UserData"))
       : null;
-    setLoggedInUser(LoggedInUserData);
+    setLoggedInUser(userData);
   }, []);
 
   useEffect(() => {
@@ -58,27 +56,21 @@ const BrowserChatBubble = ({ msg }) => {
   const toggleShowTime = () => setShowTime((prev) => !prev);
 
   const handleMenuToggle = (e) => {
-    e.stopPropagation(); // prevent bubble click toggle
+    e.stopPropagation();
     const rect = e.currentTarget.getBoundingClientRect();
     const menuHeight = 180;
     const menuWidth = 160;
 
-    let top = rect.bottom + 4; // slight bottom offset
+    let top = rect.bottom + 4;
     let left = rect.left + 20;
 
-    if (top + menuHeight > window.innerHeight) {
-      top = rect.top - menuHeight - 6; // show above if overflow
-    }
-    if (left + menuWidth > window.innerWidth) {
-      left = window.innerWidth - menuWidth - 10;
-    }
+    if (top + menuHeight > window.innerHeight) top = rect.top - menuHeight - 6;
+    if (left + menuWidth > window.innerWidth) left = window.innerWidth - menuWidth - 10;
     if (left < 0) left = 10;
 
     setMenuPosition({ top, left });
     setOpenMenuId((prev) => (prev === id ? null : id));
   };
-
-  const isMenuOpen = openMenuId === id;
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -93,9 +85,11 @@ const BrowserChatBubble = ({ msg }) => {
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [openMenuId]);
+  }, []);
 
-  const renderMessageWithMentions = (text, usersData) => {
+  const isMenuOpen = openMenuId === id;
+
+  const renderMessageWithMentions = (text) => {
     if (!text) return null;
     const sortedUsers = [...usersData].sort(
       (a, b) => b.first_name.length - a.first_name.length
@@ -120,14 +114,14 @@ const BrowserChatBubble = ({ msg }) => {
     return rendered;
   };
 
-  const shouldRenderBubble = is_deleted || message_text;
+  const shouldRenderBubble = is_deleted || message_text || attachment_name;
 
   return (
     <div className="chat-bubble-row user">
       {shouldRenderBubble && (
         <div className="chat-bubble-container group" onClick={toggleShowTime}>
-          {/* Floating menu button */}
-          {!is_deleted && message_text && (
+          {/* Always render menu button if message not deleted */}
+          {!is_deleted && (
             <button
               ref={buttonRef}
               className="menu-button-right"
@@ -144,35 +138,27 @@ const BrowserChatBubble = ({ msg }) => {
             </div>
           )}
 
-          <span className={`chat-message-text ${is_deleted ? "deleted" : ""}`}>
-            {is_deleted
-              ? "This message was deleted"
-              : renderMessageWithMentions(message_text, usersData)}
-          </span>
+          {message_text && (
+            <span className={`chat-message-text ${is_deleted ? "deleted" : ""}`}>
+              {is_deleted
+                ? "This message was deleted"
+                : renderMessageWithMentions(message_text)}
+            </span>
+          )}
+
+          {attachment_name && (
+            <>
+              <ImagePreview attachment_name={attachment_name} is_deleted={is_deleted} />
+              <VideoPreview attachment_name={attachment_name} is_deleted={is_deleted} />
+              <FilePreview id={id} attachment_name={attachment_name} is_deleted={is_deleted} />
+            </>
+          )}
         </div>
       )}
 
       {meeting_link && <CallMessageCard msg={msg} />}
 
       {showTime && <div className="chat-timestamp">{formattedTime}</div>}
-
-      {attachment_name && (
-        <>
-          <ImagePreview
-            attachment_name={attachment_name}
-            is_deleted={is_deleted}
-          />
-          <VideoPreview
-            attachment_name={attachment_name}
-            is_deleted={is_deleted}
-          />
-          <FilePreview
-            id={id}
-            attachment_name={attachment_name}
-            is_deleted={is_deleted}
-          />
-        </>
-      )}
 
       {isMenuOpen && (
         <FloatingMenu

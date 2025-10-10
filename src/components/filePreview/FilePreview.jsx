@@ -35,6 +35,18 @@ const FilePreview = ({ attachment_name, is_deleted, id }) => {
   const { icon, color } = fileIconData;
   const fileUrl = `https://eminenture.live/public/chatting-files/${attachment_name}`;
 
+  const trimFileName = (name, maxLength = 20) => {
+    if (!name) return "";
+    if (name.length <= maxLength) return name;
+
+    const dotIndex = name.lastIndexOf(".");
+    if (dotIndex === -1) return name.slice(0, maxLength - 3) + "...";
+
+    const ext = name.slice(dotIndex); // includes the dot
+    const trimmedName = name.slice(0, maxLength - ext.length - 3);
+    return `${trimmedName}...${ext}`;
+  };
+
   return (
     <div className="file-preview-wrapper">
       <div className="file-preview-header">
@@ -46,7 +58,7 @@ const FilePreview = ({ attachment_name, is_deleted, id }) => {
           rel="noopener noreferrer"
           className="file-preview-name"
         >
-          {attachment_name}
+          {trimFileName(attachment_name, 17)}{" "}
         </a>
 
         <div className="file-preview-extra">

@@ -18,7 +18,7 @@ const ImagePreview = ({ attachment_name, is_deleted }) => {
       </a>
 
       {/* Download Button */}
-      <button className="download-btn" onClick={handleDownload}>
+      <button className="download-btn" onClick={() => handleDownload(fileUrl, attachment_name)}>
         <Download size={18} />
       </button>
     </div>

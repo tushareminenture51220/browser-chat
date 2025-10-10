@@ -10,9 +10,9 @@ import CallMessageCard from "./CallMessageCard";
 import FloatingMenu from "../floatMenu/FloatingMenu";
 import EditMessage from "../floatMenu/EditMessage";
 import DeleteMessage from "../floatMenu/DeleteMessage";
+import ForwardMessageModal from "../floatMenu/ForwardMessageModal";
 import "./BrowserChatFrom.css";
 import "../floatMenu/menu.css";
-import ForwardMessageModal from "../floatMenu/ForwardMessageModal";
 
 const BrowserChatFrom = ({ msg }) => {
   const {
@@ -37,7 +37,6 @@ const BrowserChatFrom = ({ msg }) => {
   const buttonRef = useRef(null);
 
   const toggleShowTime = () => setShowTime((prev) => !prev);
-  const shouldRenderBubble = is_deleted || currentMessage.message_text;
 
   const handleMenuToggle = (e) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -67,7 +66,7 @@ const BrowserChatFrom = ({ msg }) => {
   };
 
   const handleForwardClick = () => {
-    setForwardVisible(true); // ✅ open modal
+    setForwardVisible(true);
     setOpenMenuId(null);
   };
 
@@ -100,41 +99,58 @@ const BrowserChatFrom = ({ msg }) => {
 
   return (
     <div className="chat-bubble-row self relative">
-      {shouldRenderBubble && (
-        <div className="chat-bubble-container from group" onClick={toggleShowTime}>
-          {!is_deleted && currentMessage.message_text && (
-            <button
-              ref={buttonRef}
-              className="menu-button-left"
-              onClick={handleMenuToggle}
-            >
-              <Icon icon="mdi:dots-vertical" width="20" height="20" />
-            </button>
-          )}
+      {/* Bubble container for text and/or attachments */}
+      {(currentMessage.message_text || attachment_name) && (
+  <div
+    className="chat-bubble-container from group"
+    onClick={toggleShowTime}
+  >
+    {!is_deleted && currentMessage.message_text && (
+      <button
+        ref={buttonRef}
+        className="menu-button-left"
+        onClick={handleMenuToggle}
+      >
+        <Icon icon="mdi:dots-vertical" width="20" height="20" />
+      </button>
+    )}
 
-          <span
-            className={`chat-message-text ${
-              is_deleted ? "chat-deleted" : ""
-            }`}
-          >
-            {is_deleted
-              ? "This message was deleted"
-              : currentMessage.message_text}
-          </span>
-        </div>
-      )}
+    {currentMessage.message_text && (
+      <span
+        className={`chat-message-text ${
+          is_deleted ? "chat-deleted" : ""
+        }`}
+      >
+        {is_deleted
+          ? "This message was deleted"
+          : currentMessage.message_text}
+      </span>
+    )}
+
+    {attachment_name && (
+      <>
+        <ImagePreview
+          attachment_name={attachment_name}
+          is_deleted={is_deleted}
+        />
+        <VideoPreview
+          attachment_name={attachment_name}
+          is_deleted={is_deleted}
+        />
+        <FilePreview
+          id={id}
+          attachment_name={attachment_name}
+          is_deleted={is_deleted}
+        />
+      </>
+    )}
+  </div>
+)}
+
 
       {meeting_link && <CallMessageCard msg={msg} />}
 
       {showTime && <div className="chat-timestamp">{formattedTime}</div>}
-
-      {attachment_name && (
-        <>
-          <ImagePreview attachment_name={attachment_name} is_deleted={is_deleted} />
-          <VideoPreview attachment_name={attachment_name} is_deleted={is_deleted} />
-          <FilePreview id={id} attachment_name={attachment_name} is_deleted={is_deleted} />
-        </>
-      )}
 
       {openMenuId === id && (
         <FloatingMenu
