@@ -3,6 +3,7 @@
 import React from "react";
 import { Icon } from "@iconify/react";
 import AudioPlayer from "../filePreview/AudioPlayer";
+import { handleDownload } from "../../../utils/download";
 import "./FilePreview.css";
 
 const FilePreview = ({ attachment_name, is_deleted, id }) => {
@@ -25,16 +26,14 @@ const FilePreview = ({ attachment_name, is_deleted, id }) => {
 
   const getFileIcon = (filename) => {
     const ext = filename?.split(".").pop()?.toLowerCase();
-    // Only return icon if the extension exists in fileIcons
     return ext && fileIcons[ext] ? fileIcons[ext] : null;
   };
 
   const fileIconData = getFileIcon(attachment_name);
-
-  // If the extension is not in fileIcons, don't render this component
   if (!fileIconData) return null;
 
   const { icon, color } = fileIconData;
+  const fileUrl = `https://eminenture.live/public/chatting-files/${attachment_name}`;
 
   return (
     <div className="file-preview-wrapper">
@@ -42,7 +41,7 @@ const FilePreview = ({ attachment_name, is_deleted, id }) => {
         <Icon icon={icon} className="file-preview-icon" style={{ color }} />
 
         <a
-          href={`https://eminenture.live/public/chatting-files/${attachment_name}`}
+          href={fileUrl}
           target="_blank"
           rel="noopener noreferrer"
           className="file-preview-name"
@@ -54,6 +53,15 @@ const FilePreview = ({ attachment_name, is_deleted, id }) => {
           {/\.(mp3|wav)$/i.test(attachment_name) && (
             <AudioPlayer id={id} attachment_name={attachment_name} />
           )}
+
+          {/* Download Button */}
+          <button
+            className="file-download-btn"
+            onClick={() => handleDownload(fileUrl, attachment_name)}
+            title="Download"
+          >
+            <Icon icon="mdi:download" />
+          </button>
         </div>
       </div>
     </div>

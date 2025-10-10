@@ -64,3 +64,41 @@
 .file-preview-container:hover::before {
   opacity: 1;
 }
+
+/* Download button */
+.download-btn {
+  position: absolute;
+  bottom: 7px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.6);
+  border: none;
+  color: white;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: scale(0.9);
+  transition: opacity 0.3s ease, transform 0.3s ease, background 0.3s ease;
+  cursor: pointer;
+  z-index: 2;
+}
+
+/* Show on hover */
+.file-preview-container:hover .download-btn {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Hover effect for button */
+.download-btn:hover {
+  background: rgba(0, 0, 0, 0.85);
+}
+
+/* Optional: Adjust icon size inside button */
+.download-btn svg {
+  width: 18px;
+  height: 18px;
+}

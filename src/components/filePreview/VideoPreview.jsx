@@ -1,8 +1,16 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { Play, Pause, Volume2, VolumeX, Maximize2 } from "lucide-react";
+import {
+  Play,
+  Pause,
+  Volume2,
+  VolumeX,
+  Maximize2,
+  Download,
+} from "lucide-react";
 import "./videoPreview.css";
+import { handleDownload } from "../../../utils/download";
 
 const formatTime = (seconds) => {
   if (isNaN(seconds)) return "0:00";
@@ -29,6 +37,8 @@ const VideoPreview = ({ attachment_name, is_deleted }) => {
   ) {
     return null;
   }
+
+  const fileUrl = `https://eminenture.live/public/chatting-files/${attachment_name}`;
 
   const togglePlay = () => {
     if (!videoRef.current) return;
@@ -64,8 +74,7 @@ const VideoPreview = ({ attachment_name, is_deleted }) => {
   };
 
   const handleMaximize = () => {
-    const videoUrl = `https://eminenture.live/public/chatting-files/${attachment_name}`;
-    window.open(videoUrl, "_blank");
+    window.open(fileUrl, "_blank");
   };
 
   useEffect(() => {
@@ -79,7 +88,7 @@ const VideoPreview = ({ attachment_name, is_deleted }) => {
       {/* Video element */}
       <video
         ref={videoRef}
-        src={`https://eminenture.live/public/chatting-files/${attachment_name}`}
+        src={fileUrl}
         className="video-preview"
         onClick={togglePlay}
         onTimeUpdate={handleTimeUpdate}
@@ -93,36 +102,47 @@ const VideoPreview = ({ attachment_name, is_deleted }) => {
 
       {/* Overlay Play/Pause */}
       <div className="video-play-overlay" onClick={togglePlay}>
-        {isPlaying ? <Pause className="video-play-icon" /> : <Play className="video-play-icon" />}
+        {isPlaying ? (
+          <Pause className="video-play-icon" />
+        ) : (
+          <Play className="video-play-icon" />
+        )}
       </div>
 
       {/* Bottom Control Bar */}
       <div className="video-control-bar">
-        {/* Play/Pause */}
-        <button className="control-btn" onClick={togglePlay}>
-          {isPlaying ? <Pause size={16} /> : <Play size={16} />}
-        </button>
+  <button className="control-btn" onClick={togglePlay}>
+    {isPlaying ? <Pause size={16} /> : <Play size={16} />}
+  </button>
 
-        {/* Progress Bar */}
-        <input
-          type="range"
-          min={0}
-          max={100}
-          value={progress}
-          onChange={handleProgressChange}
-          className="progress-bar"
-        />
+  <input
+    type="range"
+    min={0}
+    max={100}
+    value={progress}
+    onChange={handleProgressChange}
+    className="progress-bar"
+  />
 
-        {/* Time */}
-        <span className="time-display">
-          {formatTime(currentTime)} / {formatTime(duration)}
-        </span>
+  <span className="time-display">
+    {formatTime(currentTime)} / {formatTime(duration)}
+  </span>
 
-        {/* Volume Toggle */}
-        <button className="control-btn" onClick={toggleMute}>
-          {isMuted ? <VolumeX size={16} /> : <Volume2 size={16} />}
-        </button>
-      </div>
+  {/* Right side buttons */}
+  <div className="right-controls">
+    <button className="control-btn" onClick={toggleMute}>
+      {isMuted ? <VolumeX size={16} /> : <Volume2 size={16} />}
+    </button>
+
+    <button
+      className="video-download-btn"
+      onClick={() => handleDownload(fileUrl, attachment_name)}
+    >
+      <Download size={18} />
+    </button>
+  </div>
+</div>
+
     </div>
   );
 };

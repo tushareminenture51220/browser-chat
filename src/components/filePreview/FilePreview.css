@@ -45,12 +45,13 @@
   gap: 6px;
 }
 
-/* Header: icon + filename */
+/* Header: icon + filename + extra */
 .file-preview-header {
   display: flex;
   align-items: center;
   gap: var(--gap);
   min-height: 24px;
+  width: 100%;
 }
 
 /* File type icon */
@@ -69,9 +70,10 @@
   overflow: hidden;
   text-overflow: ellipsis;
   font-size: 0.9rem;
+  flex: 1; /* take remaining space */
 }
 
-/* Extra info (size, date, actions) */
+/* Extra info (audio player, actions) */
 .file-preview-extra {
   display: flex;
   align-items: center;
@@ -79,6 +81,32 @@
   margin-left: auto;
   font-size: 0.8rem;
   color: var(--text-muted);
+}
+
+/* Download Button */
+.file-download-btn {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: none;
+  color: white;
+  cursor: pointer;
+  /* background: #3b82f6; */
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.file-download-btn:hover {
+  background: #ffffff; /* Darker blue on hover */
+  transform: scale(1.1);
+}
+
+.file-download-btn svg {
+  width: 20px;
+  height: 20px;
+  color: black;
 }
 
 /* Divider */
@@ -106,5 +134,15 @@
   .file-preview-icon {
     width: 16px;
     height: 16px;
+  }
+
+  .file-download-btn {
+    width: 24px;
+    height: 24px;
+  }
+
+  .file-download-btn svg {
+    width: 14px;
+    height: 14px;
   }
 }
