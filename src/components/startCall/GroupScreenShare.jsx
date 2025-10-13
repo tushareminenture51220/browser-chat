@@ -5,7 +5,6 @@ import { Icon } from "@iconify/react";
 import { useSelector } from "react-redux";
 import ParticipantCard from "./ParticipantCard";
 import "./GroupScreenShare.css";
-import ReactDOM from "react-dom";
 
 const GroupScreenShare = ({
   remoteScreenTrack,
@@ -40,7 +39,7 @@ const GroupScreenShare = ({
     });
   }, [activeGroupParticipants, callerId]);
 
-  const popup = (
+  return (
     <>
       {/* Shared Screen Video */}
       <video
@@ -122,9 +121,7 @@ const GroupScreenShare = ({
         </div>
       )}
     </>
-  )
-
-  return ReactDOM.createPortal(popup, document.body);
+  );
 };
 
 export default GroupScreenShare;
