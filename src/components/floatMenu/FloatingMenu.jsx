@@ -3,7 +3,7 @@ import { Icon } from "@iconify/react";
 import { toast } from "react-toastify";
 
 const FloatingMenu = React.forwardRef(
-  ({ message_text, onEdit, onDelete, onForward, closeMenu, style, show = "myself" }, ref) => {
+  ({ message_text, onEdit, onDelete, onForward, closeMenu, style, show = "myself", isVisible = false }, ref) => {
     const handleEdit = () => {
       onEdit();
       closeMenu();
@@ -26,7 +26,11 @@ const FloatingMenu = React.forwardRef(
     };
 
     return (
-      <div className="floating-menu-modern" style={style} ref={ref}>
+      <div 
+        className={`floating-menu-modern ${isVisible ? 'visible' : ''}`} 
+        style={style} 
+        ref={ref}
+      >
         {show === "myself" && message_text && (
           <button onClick={handleEdit}>
             <Icon icon="mdi:pencil-outline" width="18" height="18" /> Edit

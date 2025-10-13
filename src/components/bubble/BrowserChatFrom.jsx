@@ -26,7 +26,6 @@ const BrowserChatFrom = ({ msg }) => {
 
   const [showTime, setShowTime] = useState(false);
   const [openMenuId, setOpenMenuId] = useState(null);
-  const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
   const [editVisible, setEditVisible] = useState(false);
   const [deleteVisible, setDeleteVisible] = useState(false);
   const [forwardVisible, setForwardVisible] = useState(false);
@@ -39,19 +38,6 @@ const BrowserChatFrom = ({ msg }) => {
   const toggleShowTime = () => setShowTime((prev) => !prev);
 
   const handleMenuToggle = (e) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const menuHeight = 180;
-    const menuWidth = 160;
-
-    let top = rect.bottom + 2;
-    let left = rect.left - 150;
-
-    if (top + menuHeight > window.innerHeight) top = rect.top - menuHeight - 6;
-    if (left + menuWidth > window.innerWidth)
-      left = window.innerWidth - menuWidth - 10;
-    if (left < 0) left = 10;
-
-    setMenuPosition({ top, left });
     setOpenMenuId((prev) => (prev === id ? null : id));
   };
 
@@ -101,72 +87,71 @@ const BrowserChatFrom = ({ msg }) => {
     <div className="chat-bubble-row self relative">
       {/* Bubble container for text and/or attachments */}
       {(currentMessage.message_text || attachment_name) && (
-  <div
-    className="chat-bubble-container from group"
-    onClick={toggleShowTime}
-  >
-    {!is_deleted && currentMessage.message_text && (
-      <button
-        ref={buttonRef}
-        className="menu-button-left"
-        onClick={handleMenuToggle}
-      >
-        <Icon icon="mdi:dots-vertical" width="20" height="20" />
-      </button>
-    )}
+        <div
+          className="chat-bubble-container from group"
+          onClick={toggleShowTime}
+        >
+          {!is_deleted && currentMessage.message_text && (
+            <button
+              ref={buttonRef}
+              className="menu-button-left"
+              onClick={handleMenuToggle}
+            >
+              <Icon icon="mdi:dots-vertical" width="20" height="20" />
+            </button>
+          )}
 
-    {currentMessage.message_text && (
-      <span
-        className={`chat-message-text ${
-          is_deleted ? "chat-deleted" : ""
-        }`}
-      >
-        {is_deleted
-          ? "This message was deleted"
-          : currentMessage.message_text}
-      </span>
-    )}
+          {currentMessage.message_text && (
+            <span
+              className={`chat-message-text ${
+                is_deleted ? "chat-deleted" : ""
+              }`}
+            >
+              {is_deleted
+                ? "This message was deleted"
+                : currentMessage.message_text}
+            </span>
+          )}
 
-    {attachment_name && (
-      <>
-        <ImagePreview
-          attachment_name={attachment_name}
-          is_deleted={is_deleted}
-        />
-        <VideoPreview
-          attachment_name={attachment_name}
-          is_deleted={is_deleted}
-        />
-        <FilePreview
-          id={id}
-          attachment_name={attachment_name}
-          is_deleted={is_deleted}
-        />
-      </>
-    )}
-  </div>
-)}
-
+          {attachment_name && (
+            <>
+              <ImagePreview
+                attachment_name={attachment_name}
+                is_deleted={is_deleted}
+              />
+              <VideoPreview
+                attachment_name={attachment_name}
+                is_deleted={is_deleted}
+              />
+              <FilePreview
+                id={id}
+                attachment_name={attachment_name}
+                is_deleted={is_deleted}
+              />
+            </>
+          )}
+        </div>
+      )}
 
       {meeting_link && <CallMessageCard msg={msg} />}
 
       {showTime && <div className="chat-timestamp">{formattedTime}</div>}
 
-      {openMenuId === id && (
-        <FloatingMenu
-          ref={menuRef}
-          message_text={currentMessage.message_text}
-          closeMenu={() => setOpenMenuId(null)}
-          style={{
-            top: menuPosition.top,
-            left: menuPosition.left,
-            position: "fixed",
-          }}
-          onEdit={handleEditClick}
-          onDelete={handleDeleteClick}
-          onForward={handleForwardClick}
-        />
-      )}
+      {/* ALWAYS render menu, control visibility with CSS class */}
+      <FloatingMenu
+        ref={menuRef}
+        message_text={currentMessage.message_text}
+        closeMenu={() => setOpenMenuId(null)}
+        isVisible={openMenuId === id} // Pass visibility as prop
+        style={{
+          position: "fixed",
+          top: "60%",
+          left: "63.5%",
+        }}
+        onEdit={handleEditClick}
+        onDelete={handleDeleteClick}
+        onForward={handleForwardClick}
+      />
 
       {editVisible && (
         <EditMessage

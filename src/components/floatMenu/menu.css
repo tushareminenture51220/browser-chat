@@ -81,3 +81,52 @@
   opacity: 1;
   pointer-events: auto;  /* enable click when visible */
 }
+
+/* Floating Menu - Smooth Center Animation */
+.floating-menu-modern {
+  position: fixed;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  padding: 8px;
+  min-width: 160px;
+  
+  /* Smooth animation properties */
+  opacity: 0;
+  visibility: hidden;
+  transform: translate(-50%, -50%) scale(0.9);
+  transition: opacity 0.15s ease-out, 
+              transform 0.15s ease-out,
+              visibility 0.15s;
+}
+
+/* When menu is visible */
+.floating-menu-modern.visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.floating-menu-modern button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #374151;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  text-align: left;
+}
+
+.floating-menu-modern button:hover {
+  background: #f3f4f6;
+}
+
+.floating-menu-modern button:active {
+  transform: scale(0.98);
+}
