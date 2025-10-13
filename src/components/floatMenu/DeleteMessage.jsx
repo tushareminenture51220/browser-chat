@@ -6,6 +6,7 @@ import Cookies from "js-cookie";
 import { toast } from "react-toastify";
 import { useSocket } from "../../../context/SocketContext";
 import "./DeleteMessage.css";
+import ReactDOM from "react-dom";
 
 const DeleteMessage = ({ message, onClose, onMessageDeleted }) => {
   const [loading, setLoading] = useState(false);
@@ -46,7 +47,7 @@ const DeleteMessage = ({ message, onClose, onMessageDeleted }) => {
     setLoading(false);
   };
 
-  return (
+  const popup = (
     <div className="delete-message-overlay">
       <div className="delete-message-container">
         {/* Header */}
@@ -158,7 +159,9 @@ const DeleteMessage = ({ message, onClose, onMessageDeleted }) => {
         </div>
       </div>
     </div>
-  );
+  )
+
+  return ReactDOM.createPortal(popup, document.body);
 };
 
 export default DeleteMessage;

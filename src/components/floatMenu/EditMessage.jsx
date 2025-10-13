@@ -6,6 +6,7 @@ import Cookies from "js-cookie";
 import { toast } from "react-toastify";
 import { useSocket } from "../../../context/SocketContext";
 import "./EditMessage.css";
+import ReactDOM from "react-dom";
 
 const EditMessage = ({ message, onClose, onMessageUpdated }) => {
   const [text, setText] = useState(message.message_text);
@@ -51,7 +52,7 @@ const EditMessage = ({ message, onClose, onMessageUpdated }) => {
     setLoading(false);
   };
 
-  return (
+  const popup = (
     <div className="edit-message-overlay">
       <div className="edit-message-container">
         {/* Header */}
@@ -145,7 +146,9 @@ const EditMessage = ({ message, onClose, onMessageUpdated }) => {
         </div>
       </div>
     </div>
-  );
+  )
+
+  return ReactDOM.createPortal(popup, document.body);
 };
 
 export default EditMessage;
