@@ -5,6 +5,7 @@ import { Icon } from "@iconify/react";
 import { useSelector } from "react-redux";
 import ParticipantCard from "./ParticipantCard";
 import "./GroupScreenShare.css";
+import ReactDOM from "react-dom";
 
 const GroupScreenShare = ({
   remoteScreenTrack,
@@ -39,7 +40,7 @@ const GroupScreenShare = ({
     });
   }, [activeGroupParticipants, callerId]);
 
-  return (
+  const popup = (
     <>
       {/* Shared Screen Video */}
       <video
@@ -94,7 +95,11 @@ const GroupScreenShare = ({
           </button>
 
           {/* Minimize Button */}
-          <button onClick={() => setIsMinimized(true)} title="Minimize" className="minimizing-btn">
+          <button
+            onClick={() => setIsMinimized(true)}
+            title="Minimize"
+            className="minimizing-btn"
+          >
             <Icon icon="ic:round-close-fullscreen" className="icon-md" />
           </button>
 
@@ -122,6 +127,8 @@ const GroupScreenShare = ({
       )}
     </>
   );
+
+  return ReactDOM.createPortal(popup, document.body);
 };
 
 export default GroupScreenShare;
