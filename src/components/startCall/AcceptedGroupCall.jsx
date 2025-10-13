@@ -4,7 +4,6 @@ import React, { useMemo } from "react";
 import { Icon } from "@iconify/react";
 import ParticipantCard from "./ParticipantCard";
 import "./AcceptedGroupCall.css";
-import ReactDOM from "react-dom";
 
 const AcceptedGroupCall = ({
   callDuration,
@@ -29,7 +28,7 @@ const AcceptedGroupCall = ({
     });
   }, [activeGroupParticipants, callerId]);
 
-  const popup = (
+  return (
     <div className="accepted-call-container">
       {/* Header */}
       <div className="accepted-call-header">
@@ -94,10 +93,7 @@ const AcceptedGroupCall = ({
         </div>
       </div>
     </div>
-
-  )
-
-  return ReactDOM.createPortal(popup, document.body);
+  );
 };
 
 export default AcceptedGroupCall;
