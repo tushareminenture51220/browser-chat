@@ -5,6 +5,7 @@ import { Icon } from "@iconify/react";
 import { useSelector } from "react-redux";
 import ParticipantCard from "./ParticipantCard";
 import "./GroupScreenShare.css";
+import ReactDOM from "react-dom";
 
 const GroupScreenShare = ({
   remoteScreenTrack,
@@ -15,7 +16,6 @@ const GroupScreenShare = ({
   remoteAudioTracks,
   callType = "groupShare",
 }) => {
-  console.log("screen")
   const remoteScreenRef = useRef(null);
   const nodeRef = useRef(null);
   const [isMinimized, setIsMinimized] = useState(false);
@@ -40,7 +40,7 @@ const GroupScreenShare = ({
     });
   }, [activeGroupParticipants, callerId]);
 
-  return (
+  const popup = (
     <>
       {/* Shared Screen Video */}
       <video
@@ -122,7 +122,9 @@ const GroupScreenShare = ({
         </div>
       )}
     </>
-  );
+  )
+
+  return ReactDOM.createPortal(popup, document.body);
 };
 
 export default GroupScreenShare;

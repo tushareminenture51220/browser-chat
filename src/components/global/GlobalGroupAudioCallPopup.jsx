@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import ReactDOM from "react-dom";
 import Cookies from "js-cookie";
 import axios from "axios";
 import { useSocket } from "../../../context/SocketContext.jsx";
@@ -543,51 +542,74 @@ const GlobalGroupAudioCallPopup = () => {
     ["group-audio"].includes(callType) &&
     (isIncomingCall || isOutgoingCall || isCallActive);
 
-  if (!shouldRenderGroupCall) return null;
+    if (!shouldRenderGroupCall) return null;
 
-  const popupContainer = document.body;
+  const sharedProps = {
+    myUserId,
+    isCallActive,
+    handleAccept,
+    handleReject,
+    handleHangUp,
+    startScreenShare,
+    stopScreenShare,
+    remoteScreenTrack,
+    toggleMute,
+    setIsMuted,
+    isMuted,
+    callStarted,
+    setCallStarted,
+    formatDuration,
+    callerId,
+    remoteAudioTracks,
+  };
 
-  const acceptedGroupCallUI = (
-    <AcceptedGroupCall
-      groupName={groupName}
-      callDuration={callDuration}
-      activeGroupParticipants={activeGroupParticipants}
-      mutedUsers={mutedUsers}
-      isMuted={isMuted}
-      isScreenSharing={isScreenSharing}
-      toggleMute={toggleMute}
-      toggleScreenShare={handleToggleScreenShare}
-      handleHangUp={handleHangUp}
-      setIsMinimized={setIsMinimized}
-      formatDuration={formatDuration}
-      callerId={callerId}
-      remoteAudioTracks={remoteAudioTracks}
-    />
-  );
-
-  const screenShareUI = (
-    <GroupScreenShare
-      remoteScreenTrack={remoteScreenTrack}
-      handleHangUp={handleHangUp}
-      toggleMute={toggleMute}
-      isMuted={localTrack ? !localTrack.isEnabled : false}
-      callerId={callerId}
-      remoteAudioTracks={remoteAudioTracks}
-    />
-  );
-
+  // near top of component render (just before your shouldRenderGroupCall check)
+//   console.log("remoteScreenTrack", remoteScreenTrack)
   return (
     <>
-      {/* Hidden audio container for playback */}
-      <div ref={audioContainerRef} style={{ display: "none" }} aria-hidden />
+      {/* Always-mounted hidden audio container so track.attach() can append safely */}
+      <div
+        ref={audioContainerRef}
+        style={{ display: "none" }}
+        aria-hidden="true"
+      />
 
-      {/* Render group call UIs as portals */}
-      {!remoteScreenTrack &&
-        isCallActive &&
-        ReactDOM.createPortal(acceptedGroupCallUI, popupContainer)}
+      {!remoteScreenTrack && isCallActive && (
+        <AcceptedGroupCall
+          groupName={groupName}
+          callDuration={callDuration}
+          activeGroupParticipants={activeGroupParticipants}
+          mutedUsers={mutedUsers}
+          isMuted={isMuted}
+          isScreenSharing={isScreenSharing}
+          toggleMute={toggleMute}
+          toggleScreenShare={handleToggleScreenShare}
+          handleHangUp={handleHangUp}
+          setIsMinimized={setIsMinimized}
+          formatDuration={formatDuration}
+          callerId={callerId}
+          remoteAudioTracks={remoteAudioTracks}
+        />
+      )}
 
-      {remoteScreenTrack &&
-        ReactDOM.createPortal(screenShareUI, popupContainer)}
+      {remoteScreenTrack && (
+        <GroupScreenShare
+          remoteScreenTrack={remoteScreenTrack}
+          handleHangUp={handleHangUp}
+          toggleMute={toggleMute}
+          isMuted={localTrack ? !localTrack.isEnabled : false}
+          callerId={callerId}
+          remoteAudioTracks={remoteAudioTracks}
+        />
+      )}
+
+      {/* {!shouldRenderGroupCall ? null : remoteScreenTrack ? (
+        ""
+      ) : isOutgoingCall && ["calling", "accepted"].includes(callStatus) ? (
+        <OutgoingGroupAudioCall {...sharedProps} />
+      ) : isIncomingCall && ["calling", "accepted"].includes(callStatus) ? (
+        <IncomingGroupAudioCall {...sharedProps} />
+      ) : null} */}
     </>
   );
 };
