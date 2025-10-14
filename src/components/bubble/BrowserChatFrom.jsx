@@ -14,7 +14,7 @@ import ForwardMessageModal from "../floatMenu/ForwardMessageModal";
 import "./BrowserChatFrom.css";
 import "../floatMenu/menu.css";
 
-const BrowserChatFrom = ({ msg }) => {
+const BrowserChatFrom = ({ msg }) => {  
   const {
     message_text,
     created_at,
@@ -34,6 +34,11 @@ const BrowserChatFrom = ({ msg }) => {
   const formattedTime = useFormattedTime(created_at);
   const menuRef = useRef(null);
   const buttonRef = useRef(null);
+
+  // ✅ Update currentMessage when msg prop changes
+  useEffect(() => {
+    setCurrentMessage(msg);
+  }, [msg]);
 
   const toggleShowTime = () => setShowTime((prev) => !prev);
 
@@ -91,7 +96,7 @@ const BrowserChatFrom = ({ msg }) => {
           className="chat-bubble-container from group"
           onClick={toggleShowTime}
         >
-          {!is_deleted && currentMessage.message_text && (
+          {!is_deleted && (
             <button
               ref={buttonRef}
               className="menu-button-left"
@@ -142,7 +147,7 @@ const BrowserChatFrom = ({ msg }) => {
         ref={menuRef}
         message_text={currentMessage.message_text}
         closeMenu={() => setOpenMenuId(null)}
-        isVisible={openMenuId === id} // Pass visibility as prop
+        isVisible={openMenuId === id}
         style={{
           position: "fixed",
           top: "60%",

@@ -21,12 +21,19 @@ const EditMessage = ({ message, onClose, onMessageUpdated }) => {
     setLoggedInUser(LoggedInUserData);
   }, []);
 
-  const handleSave = async () => {
-    console.log("message", message)
+  const handleSave = async () => {    
+    // ✅ Use message.id if available, fallback to tempId
+    const messageId = message.id || message.tempId;
+    
+    if (!messageId) {
+      toast.error("Message ID not found");
+      return;
+    }
+
     setLoading(true);
     try {
       const res = await axios.put(
-        `${import.meta.env.VITE_HRMS_MA_API}/api/edit-msg/${message.tempId}`,
+        `${import.meta.env.VITE_HRMS_MA_API}/api/edit-msg/${messageId}`,
         {
           userId: LoggedInUser.id,
           newText: text,
@@ -146,7 +153,7 @@ const EditMessage = ({ message, onClose, onMessageUpdated }) => {
         </div>
       </div>
     </div>
-  )
+  );
 
   return ReactDOM.createPortal(popup, document.body);
 };

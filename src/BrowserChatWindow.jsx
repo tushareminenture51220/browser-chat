@@ -170,6 +170,7 @@ const BrowserChatWindow = ({ chatUser, onClose, index }) => {
 
     // Saved message handler
     const handleSaved = (savedMsg) => {
+      console.log("savedmsg", savedMsg)
       if (!isGroup) {
         const relevant =
           (Number(savedMsg.sender_id) === Number(chatUser.id) &&
