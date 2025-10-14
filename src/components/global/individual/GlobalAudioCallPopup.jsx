@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import ReactDOM from "react-dom";
 import Cookies from "js-cookie";
 import { useSocket } from "../../../../context/SocketContext.jsx";
 import axios from "axios";
@@ -26,16 +27,21 @@ const GlobalAudioCallPopup = () => {
   const { socket } = useSocket();
   const dispatch = useDispatch();
 
+  // State management
   const [myUserId, setMyUserId] = useState(null);
   const [room, setRoom] = useState(null);
   const [localTrack, setLocalTrack] = useState(null);
-  const [remoteScreenTrack, setRemoteScreenTrack] = useState();
+  const [remoteScreenTrack, setRemoteScreenTrack] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
   const [isMuted, setIsMuted] = useState(false);
   const [remoteAudioTracks, setRemoteAudioTracks] = useState({});
 
+  // Refs
   const audioContainerRef = useRef(null);
+  const cleanupInProgressRef = useRef(false);
+  const roomJoinLockRef = useRef(false);
 
+  // Redux state
   const { isIncomingCall, isCallActive, callType, callStatus, callData } =
     useSelector((state) => state.call);
 
@@ -49,7 +55,10 @@ const GlobalAudioCallPopup = () => {
     roomName,
   } = callData || {};
 
-  // ✅ Get current user ID from cookies
+  const isCaller = myUserId && callerId === myUserId;
+  const isReceiver = myUserId && callerId !== myUserId;
+
+  // ✅ Get current user from cookies
   useEffect(() => {
     const rawUserData = Cookies.get("HRMS_LoggedIn_UserData");
     try {
@@ -63,14 +72,48 @@ const GlobalAudioCallPopup = () => {
     }
   }, []);
 
-  const isCaller = myUserId && callerId === myUserId;
-  const isReceiver = myUserId && callerId !== myUserId;
+  // ✅ Cleanup media tracks
+  const cleanupMedia = useCallback(() => {
+    if (cleanupInProgressRef.current) return;
+    cleanupInProgressRef.current = true;
+
+    try {
+      if (room) {
+        room.localParticipant.tracks.forEach((publication) => {
+          if (publication.track) {
+            publication.track.stop();
+            room.localParticipant.unpublishTrack(publication.track);
+          }
+        });
+        room.disconnect();
+        setRoom(null);
+      }
+
+      if (localTrack) {
+        localTrack.stop();
+        setLocalTrack(null);
+      }
+
+      setRemoteScreenTrack(null);
+      setRemoteAudioTracks({});
+      roomJoinLockRef.current = false;
+    } finally {
+      cleanupInProgressRef.current = false;
+    }
+  }, [room, localTrack]);
+
+  // ✅ Complete cleanup including Redux state
+  const cleanupRoom = useCallback(() => {
+    cleanupMedia();
+    dispatch(clearCallState());
+    dispatch(setActiveGroupParticipants([]));
+    dispatch(setMutedUsers([]));
+  }, [cleanupMedia, dispatch]);
 
   // ✅ Warn user before refresh/close if in call
   useEffect(() => {
     const handleBeforeUnload = (event) => {
-      if (isCallActive) {
-        // Show warning dialog
+      if (isCallActive && room) {
         event.preventDefault();
         event.returnValue =
           "You are currently in a call. If you leave or refresh, the call will be disconnected.";
@@ -79,37 +122,24 @@ const GlobalAudioCallPopup = () => {
     };
 
     window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [isCallActive, room]);
 
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, [isCallActive]);
-
-  // ✅ Handle actual disconnect when tab is closed/refreshed
+  // ✅ Handle disconnect on page unload
   useEffect(() => {
     const handleUnload = () => {
-      if (isCallActive) {
-        if (room) {
-          room.disconnect();
-          setRoom(null);
-        }
-        if (localTrack) {
-          localTrack.stop();
-          setLocalTrack(null);
-        }
-
+      if (isCallActive && room && socket?.current) {
         const targetId = isCaller ? receiverId : callerId;
-        if (socket?.current) {
-          socket.current.emit("call-ended", { to: targetId });
-          socket.current.emit("participant-left", {
-            userId: myUserId,
-            userName: `${currentUser?.first_name || ""}`.trim(),
-            roomName: room?.name,
-          });
-        }
+        const userName = `${currentUser?.first_name || ""}`.trim();
 
-        dispatch(clearCallState());
-        dispatch(setCallActive(false));
+        socket.current.emit("call-ended", { to: targetId });
+        socket.current.emit("participant-left", {
+          userId: myUserId,
+          userName,
+          roomName: room.name,
+        });
+
+        cleanupMedia();
       }
     };
 
@@ -118,141 +148,146 @@ const GlobalAudioCallPopup = () => {
   }, [
     isCallActive,
     room,
-    localTrack,
     socket,
     isCaller,
     receiverId,
     callerId,
-    dispatch,
     currentUser,
     myUserId,
+    cleanupMedia,
   ]);
 
-  // ✅ Join Twilio Room
-  const joinRoom = async (roomName, identity) => {
-    try {
-      const { data } = await axios.post(
-        `${import.meta.env.VITE_HRMS_MA_API}/api/twilio/token`,
-        { identity, roomName }
-      );
+  // ✅ Join Twilio Room with error handling
+  const joinRoom = useCallback(
+    async (roomName, identity) => {
+      if (roomJoinLockRef.current) {
+        console.warn("⚠️ Room join already in progress");
+        return null;
+      }
 
-      const localAudio = await Video.createLocalAudioTrack();
+      roomJoinLockRef.current = true;
 
-      const joinedRoom = await Video.connect(data.token, {
-        name: roomName,
-        tracks: [localAudio],
-        video: false,
-      });
-
-      setRoom(joinedRoom);
-      setLocalTrack(localAudio);
-
-      joinedRoom.on("trackSubscribed", (track, participant) => {
-        if (track.kind === "audio") {
-          const audioEl = track.attach();
-          audioEl.autoplay = true;
-          audioEl.playsInline = true;
-          audioContainerRef.current.appendChild(audioEl);
-
-          // ✅ Defensive check
-          const participantId = participant?.identity
-            ? `user-${participant.identity.replace("user-", "")}`
-            : `participant-${
-                participant?.sid || Math.random().toString(36).slice(2, 8)
-              }`;
-
-          setRemoteAudioTracks((prev) => ({
-            ...prev,
-            [participantId]: track,
-          }));
+      try {
+        // Disconnect existing room if any
+        if (room) {
+          console.log("Disconnecting existing room before joining new one");
+          room.disconnect();
+          setRoom(null);
         }
 
-        if (track.kind === "video") {
-          setRemoteScreenTrack(track);
-          dispatch(setIsRemoteSharing(true));
-        }
-      });
+        const { data } = await axios.post(
+          `${import.meta.env.VITE_HRMS_MA_API}/api/twilio/token`,
+          { identity, roomName }
+        );
 
-      // Also handle when track is unsubscribed (remote participant stops sharing)
-      joinedRoom.on("trackUnsubscribed", (track, participant) => {
-        if (track.kind === "video") {
-          setRemoteScreenTrack(null);
-          dispatch(setIsRemoteSharing(false));
-        }
-        if (track.kind === "audio") {
-          const participantId = participant?.identity
-            ? `user-${participant.identity.replace("user-", "")}`
-            : `participant-${participant?.sid || "unknown"}`;
+        const localAudio = await Video.createLocalAudioTrack();
 
-          setRemoteAudioTracks((prev) => {
-            const updated = { ...prev };
-            delete updated[participantId];
-            return updated;
+        const joinedRoom = await Video.connect(data.token, {
+          name: roomName,
+          tracks: [localAudio],
+          video: false,
+        });
+
+        setRoom(joinedRoom);
+        setLocalTrack(localAudio);
+
+        // Handle track subscriptions
+        const handleTrackSubscribed = (track, participant) => {
+          if (track.kind === "audio") {
+            const audioEl = track.attach();
+            audioEl.autoplay = true;
+            audioEl.playsInline = true;
+
+            if (audioContainerRef.current) {
+              audioContainerRef.current.appendChild(audioEl);
+            } else {
+              setTimeout(() => {
+                if (audioContainerRef.current) {
+                  audioContainerRef.current.appendChild(audioEl);
+                }
+              }, 300);
+            }
+
+            const participantId = participant?.identity
+              ? `user-${participant.identity.replace("user-", "")}`
+              : `participant-${participant?.sid || Math.random().toString(36).slice(2, 8)}`;
+
+            setRemoteAudioTracks((prev) => ({
+              ...prev,
+              [participantId]: track,
+            }));
+          }
+
+          if (track.kind === "video") {
+            setRemoteScreenTrack(track);
+            dispatch(setIsRemoteSharing(true));
+          }
+        };
+
+        const handleTrackUnsubscribed = (track, participant) => {
+          if (track.kind === "video") {
+            setRemoteScreenTrack(null);
+            dispatch(setIsRemoteSharing(false));
+          }
+          if (track.kind === "audio") {
+            const participantId = participant?.identity
+              ? `user-${participant.identity.replace("user-", "")}`
+              : `participant-${participant?.sid || "unknown"}`;
+
+            setRemoteAudioTracks((prev) => {
+              const updated = { ...prev };
+              delete updated[participantId];
+              return updated;
+            });
+          }
+        };
+
+        joinedRoom.on("trackSubscribed", handleTrackSubscribed);
+        joinedRoom.on("trackUnsubscribed", handleTrackUnsubscribed);
+
+        // Handle existing participants
+        joinedRoom.participants.forEach((participant) => {
+          participant.tracks.forEach((publication) => {
+            if (publication.track) {
+              handleTrackSubscribed(publication.track, participant);
+            }
           });
-        }
-      });
+        });
 
-      return joinedRoom;
-    } catch (err) {
-      console.error("❌ Failed to join room:", err);
-      dispatch(setCallStatus("failed"));
-    }
-  };
-
-  // ✅ Cleanup when call ends or component unmounts
-  useEffect(() => {
-    return () => {
-      if (room) {
-        room.disconnect();
-        setRoom(null);
+        roomJoinLockRef.current = false;
+        return joinedRoom;
+      } catch (err) {
+        console.error("❌ Failed to join room:", err);
+        dispatch(setCallStatus("failed"));
+        toast.error("Failed to join call");
+        roomJoinLockRef.current = false;
+        return null;
       }
-      if (localTrack) {
-        localTrack.stop();
-        setLocalTrack(null);
-      }
-      dispatch(clearCallState());
-    };
-  }, []);
-
-  const cleanupRoom = () => {
-    if (room) {
-      room.localParticipant.tracks.forEach((publication) => {
-        if (publication.track) {
-          publication.track.stop();
-          room.localParticipant.unpublishTrack(publication.track);
-        }
-      });
-      room.disconnect();
-      setRoom(null);
-    }
-
-    if (localTrack) {
-      localTrack.stop();
-      setLocalTrack(null);
-    }
-
-    dispatch(clearCallState());
-  };
+    },
+    [room, dispatch]
+  );
 
   // ✅ Accept incoming call
-  const handleAccept = async () => {
+  const handleAccept = useCallback(async () => {
+    if (!myUserId || !roomName || !currentUser) {
+      console.error("Missing required data for accepting call");
+      return;
+    }
+
     try {
       const identity = `user-${myUserId}`;
       const joinedRoom = await joinRoom(roomName, identity);
+
       if (joinedRoom) {
-        // Emit join-call with identity info so server and other clients know who joined
         socket.current?.emit("join-call", {
           roomName,
           userId: myUserId,
-          first_name: `${currentUser?.first_name || ""} ${
-            currentUser?.last_name || ""
-          }`.trim(),
+          first_name: `${currentUser?.first_name || ""} ${currentUser?.last_name || ""}`.trim(),
         });
 
         dispatch(setCallActive(true));
         dispatch(setCallStatus("accepted"));
 
-        // Notify caller that call was accepted (existing flow), still OK to include name
         socket.current?.emit("call-accepted", {
           to: callerId,
           roomName,
@@ -265,93 +300,78 @@ const GlobalAudioCallPopup = () => {
       toast.error("Failed to accept call");
       dispatch(setCallStatus("failed"));
     }
-  };
+  }, [myUserId, roomName, currentUser, callerId, joinRoom, socket, dispatch]);
 
-  const handleCallAccepted = async ({ roomName }) => {
-    try {
-      dispatch(setCallStatus("accepted"));
-      dispatch(setCallActive(true));
+  // ✅ Handle call accepted by receiver
+  const handleCallAccepted = useCallback(
+    async ({ roomName }) => {
+      if (!myUserId || !currentUser) return;
 
-      const identity = `user-${myUserId}`;
-      const joinedRoom = await joinRoom(roomName, identity);
-      if (joinedRoom) {
-        socket.current?.emit("join-call", {
-          roomName,
-          userId: myUserId,
-          first_name: `${currentUser?.first_name || ""} ${
-            currentUser?.last_name || ""
-          }`.trim(),
-        });
+      try {
+        dispatch(setCallStatus("accepted"));
+        dispatch(setCallActive(true));
+
+        const identity = `user-${myUserId}`;
+        const joinedRoom = await joinRoom(roomName, identity);
+
+        if (joinedRoom) {
+          socket.current?.emit("join-call", {
+            roomName,
+            userId: myUserId,
+            first_name: `${currentUser?.first_name || ""} ${currentUser?.last_name || ""}`.trim(),
+          });
+        }
+      } catch (err) {
+        console.error("Failed to join room after accept:", err);
+        dispatch(setCallStatus("failed"));
       }
-    } catch (err) {
-      console.error("Failed to join room after accept:", err);
-      dispatch(setCallStatus("failed"));
-    }
-  };
+    },
+    [myUserId, currentUser, joinRoom, socket, dispatch]
+  );
 
   // ✅ Reject call
-  const handleReject = () => {
-    if (room) {
-      room.disconnect();
-      setRoom(null);
-    }
-    if (localTrack) {
-      localTrack.stop();
-      setLocalTrack(null);
-    }
+  const handleReject = useCallback(() => {
+    cleanupMedia();
 
     const targetId = isCaller ? receiverId : callerId;
-    socket.current.emit("call-rejected", { to: targetId });
+    if (socket?.current) {
+      socket.current.emit("call-rejected", { to: targetId });
+    }
 
     dispatch(clearCallState());
     dispatch(setCallActive(false));
-    cleanupRoom();
-  };
+  }, [cleanupMedia, isCaller, receiverId, callerId, socket, dispatch]);
 
-  const handleHangUp = () => {
-    stopScreenShare();
+  // ✅ Hang up call
+  const handleHangUp = useCallback(() => {
     if (!room) return;
 
     const totalParticipants = room.participants.size + 1;
-    const userName = `${currentUser?.first_name || ""} ${
-      currentUser?.last_name || ""
-    }`.trim();
+    const userName = `${currentUser?.first_name || ""} ${currentUser?.last_name || ""}`.trim();
 
     if (totalParticipants > 2) {
-      // ✅ Multi-party -> just leave
       socket.current?.emit("participant-left", {
         userId: myUserId,
         first_name: userName,
         roomName,
       });
     } else {
-      // ✅ 1v1 -> end the whole call
       socket.current?.emit("call-ended", { roomName });
     }
 
-    // Local cleanup
-    room.disconnect();
-    setRoom(null);
-    if (localTrack) {
-      localTrack.stop();
-      setLocalTrack(null);
-    }
-
-    dispatch(clearCallState());
-    dispatch(setActiveGroupParticipants([]));
-    dispatch(setCallActive(false));
-    dispatch(setMutedUsers([]));
     cleanupRoom();
-  };
+    dispatch(setCallActive(false));
+  }, [room, currentUser, myUserId, roomName, socket, cleanupRoom, dispatch]);
 
   // ✅ Screen share
-  const startScreenShare = async () => {
+  const startScreenShare = useCallback(async () => {
     try {
       if (!room) {
         console.warn("⚠️ Cannot start screen share: no active room");
         toast.error("You need to be in a call before sharing your screen");
         return;
       }
+
       const stream = await navigator.mediaDevices.getDisplayMedia({
         video: true,
       });
@@ -359,21 +379,20 @@ const GlobalAudioCallPopup = () => {
       room.localParticipant.publishTrack(screenTrack);
 
       dispatch(setIsScreenSharing(true));
-      // toast(`name ${roomName}`);
-
-      // 🔔 Emit socket event
-      socket.current.emit("screen-share-started", { roomName });
+      socket.current?.emit("screen-share-started", { roomName });
 
       screenTrack.mediaStreamTrack.onended = () => {
         stopScreenShare();
       };
     } catch (err) {
       console.error("Screen share error:", err);
+      toast.error("Failed to start screen sharing");
     }
-  };
+  }, [room, roomName, socket, dispatch]);
 
-  const stopScreenShare = () => {
+  const stopScreenShare = useCallback(() => {
     if (!room) return;
+
     room.localParticipant.tracks.forEach((publication) => {
       if (publication.track.kind === "video") {
         publication.track.stop();
@@ -382,51 +401,37 @@ const GlobalAudioCallPopup = () => {
     });
 
     dispatch(setIsScreenSharing(false));
+    socket.current?.emit("screen-share-stopped", { roomName });
+  }, [room, roomName, socket, dispatch]);
 
-    // 🔔 Emit socket event
-    socket.current.emit("screen-share-stopped", { roomName });
-  };
+  // ✅ Toggle mute
+  const toggleMute = useCallback(() => {
+    if (!localTrack) return;
 
-  const toggleMute = () => {
-    if (localTrack) {
-      const willBeMuted = localTrack.isEnabled; // currently true = unmuted
-      if (willBeMuted) {
-        localTrack.disable(); // mute
-      } else {
-        localTrack.enable(); // unmute
-      }
-
-      // new muted state is opposite of isEnabled
-      const newMutedState = !localTrack.isEnabled;
-
-      setIsMuted(newMutedState);
-
-      // notify others correctly
-      socket.current.emit("mute-toggle", {
-        roomName,
-        userId: myUserId,
-        isMuted: newMutedState,
-      });
-
-      dispatch(setMutedUsers({ userId: myUserId, isMuted: newMutedState }));
+    const willBeMuted = localTrack.isEnabled;
+    if (willBeMuted) {
+      localTrack.disable();
+    } else {
+      localTrack.enable();
     }
-  };
 
-  // ✅ Listen to socket events
+    const newMutedState = !localTrack.isEnabled;
+    setIsMuted(newMutedState);
+
+    socket.current?.emit("mute-toggle", {
+      roomName,
+      userId: myUserId,
+      isMuted: newMutedState,
+    });
+
+    dispatch(setMutedUsers({ userId: myUserId, isMuted: newMutedState }));
+  }, [localTrack, roomName, myUserId, socket, dispatch]);
+
+  // ✅ Socket event listeners
   useEffect(() => {
     if (!socket?.current) return;
 
-    // 🔹 Listen ONCE for the full participant list when you first join
-    socket.current.once("participant-joined", ({ participants }) => {
-      dispatch(setActiveGroupParticipants(participants));
-    });
-
-    const handleIncomingCall = ({
-      roomName,
-      callerId,
-      callerName,
-      callerImage,
-    }) => {
+    const handleIncomingCall = ({ roomName, callerId, callerName, callerImage }) => {
       dispatch(
         setCallData({
           callerId,
@@ -441,23 +446,15 @@ const GlobalAudioCallPopup = () => {
 
     const handleCallRejected = () => {
       toast.error("Call was rejected.");
-      dispatch(clearCallState());
+      cleanupRoom();
     };
 
     const handleCallEnded = () => {
       toast("Call ended");
-      if (room) {
-        cleanupRoom();
-      }
-      if (localTrack) {
-        localTrack.stop();
-        setLocalTrack(null);
-      }
-      dispatch(clearCallState());
-      dispatch(setActiveGroupParticipants([]));
+      cleanupRoom();
     };
 
-    const handleRemoteStartScreenShare = ({ from, roomName }) => {
+    const handleRemoteStartScreenShare = () => {
       dispatch(setIsRemoteSharing(true));
     };
 
@@ -467,17 +464,12 @@ const GlobalAudioCallPopup = () => {
     };
 
     const handleParticipantJoined = ({ userId, first_name, participants }) => {
-      if (!userId) return;
-      if (userId === myUserId) return;
-
+      if (!userId || userId === myUserId) return;
       dispatch(setActiveGroupParticipants(participants));
-      // toast.success(`${first_name || "Someone"} joined`);
     };
 
     const handleParticipantLeft = ({ userId, first_name, participants }) => {
-      if (!userId) return;
-      if (userId === myUserId) return;
-
+      if (!userId || userId === myUserId) return;
       dispatch(setActiveGroupParticipants(participants));
       toast.info(`${first_name || "Someone"} left`);
     };
@@ -486,6 +478,7 @@ const GlobalAudioCallPopup = () => {
       dispatch(setMutedUsers({ userId, isMuted }));
     };
 
+    // Register listeners
     socket.current.on("incoming-call", handleIncomingCall);
     socket.current.on("call-accepted", handleCallAccepted);
     socket.current.on("call-rejected", handleCallRejected);
@@ -493,12 +486,10 @@ const GlobalAudioCallPopup = () => {
     socket.current.on("participant-joined", handleParticipantJoined);
     socket.current.on("participant-left", handleParticipantLeft);
     socket.current.on("mute-toggle", handleMuteToggle);
-    socket.current.on(
-      "remote-start-screen-share",
-      handleRemoteStartScreenShare
-    );
+    socket.current.on("remote-start-screen-share", handleRemoteStartScreenShare);
     socket.current.on("remote-stop-screen-share", handleRemoteStopScreenShare);
 
+    // Cleanup listeners
     return () => {
       socket.current.off("incoming-call", handleIncomingCall);
       socket.current.off("call-accepted", handleCallAccepted);
@@ -507,16 +498,17 @@ const GlobalAudioCallPopup = () => {
       socket.current.off("participant-joined", handleParticipantJoined);
       socket.current.off("participant-left", handleParticipantLeft);
       socket.current.off("mute-toggle", handleMuteToggle);
-      socket.current.off(
-        "remote-start-screen-share",
-        handleRemoteStartScreenShare
-      );
-      socket.current.off(
-        "remote-stop-screen-share",
-        handleRemoteStopScreenShare
-      );
+      socket.current.off("remote-start-screen-share", handleRemoteStartScreenShare);
+      socket.current.off("remote-stop-screen-share", handleRemoteStopScreenShare);
     };
-  }, [socket?.current, room, localTrack, dispatch, myUserId, currentUser]);
+  }, [socket?.current, myUserId, dispatch, handleCallAccepted, cleanupRoom]);
+
+  // ✅ Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      cleanupRoom();
+    };
+  }, [cleanupRoom]);
 
   // ✅ Render conditions
   const shouldRender =
@@ -528,8 +520,11 @@ const GlobalAudioCallPopup = () => {
 
   if (!shouldRender) return null;
 
+  const popupContainer = document.body;
+
+  // ✅ Screen share UI
   if (remoteScreenTrack) {
-    return (
+    return ReactDOM.createPortal(
       <GroupScreenShare
         callType="oneOnone"
         remoteScreenTrack={remoteScreenTrack}
@@ -537,53 +532,61 @@ const GlobalAudioCallPopup = () => {
         toggleMute={toggleMute}
         isMuted={localTrack ? !localTrack.isEnabled : false}
         remoteAudioTracks={remoteAudioTracks}
-      />
+      />,
+      popupContainer
     );
   }
 
-  return (
-    <>
-      {/* Hidden container for remote audio */}
-      <div ref={audioContainerRef} style={{ display: "none" }} />
+  // ✅ Incoming call UI
+  if (isReceiver) {
+    return (
+      <>
+        <div ref={audioContainerRef} style={{ display: "none" }} aria-hidden />
+        {ReactDOM.createPortal(
+          <IncomingAudioCall
+            callerName={callerName}
+            callerImage={callerImage}
+            isIncomingCall={isIncomingCall}
+            isCallActive={isCallActive}
+            callStatus={callStatus}
+            callerId={callerId}
+            handleAccept={handleAccept}
+            handleReject={handleReject}
+            handleHangUp={handleHangUp}
+            startScreenShare={startScreenShare}
+            stopScreenShare={stopScreenShare}
+            toggleMute={toggleMute}
+            isMuted={isMuted}
+          />,
+          popupContainer
+        )}
+      </>
+    );
+  }
 
-      {isReceiver ? (
-        <IncomingAudioCall
-          callerName={callerName}
-          callerImage={callerImage}
-          isIncomingCall={isIncomingCall}
-          isCallActive={isCallActive}
-          callStatus={callStatus}
-          callerId={callerId}
-          handleAccept={handleAccept}
-          handleReject={handleReject}
-          handleHangUp={handleHangUp}
-          startScreenShare={startScreenShare}
-          stopScreenShare={stopScreenShare}
-          joinRoom={joinRoom}
-          localTrack={localTrack}
-          setIsScreenSharing={setIsScreenSharing}
-          remoteScreenTrack={remoteScreenTrack}
-          toggleMute={toggleMute}
-          isMuted={isMuted}
-        />
-      ) : isCaller ? (
-        <OutgoingAudioCall
-          receiverName={receiverName}
-          receiverImage={receiverImage}
-          callStatus={callStatus}
-          handleHangUp={handleHangUp}
-          startScreenShare={startScreenShare}
-          stopScreenShare={stopScreenShare}
-          joinRoom={joinRoom}
-          localTrack={localTrack}
-          setIsScreenSharing={setIsScreenSharing}
-          remoteScreenTrack={remoteScreenTrack}
-          toggleMute={toggleMute}
-          isMuted={isMuted}
-        />
-      ) : null}
-    </>
-  );
+  // ✅ Outgoing call UI
+  if (isCaller) {
+    return (
+      <>
+        <div ref={audioContainerRef} style={{ display: "none" }} aria-hidden />
+        {ReactDOM.createPortal(
+          <OutgoingAudioCall
+            receiverName={receiverName}
+            receiverImage={receiverImage}
+            callStatus={callStatus}
+            handleHangUp={handleHangUp}
+            startScreenShare={startScreenShare}
+            stopScreenShare={stopScreenShare}
+            toggleMute={toggleMute}
+            isMuted={isMuted}
+          />,
+          popupContainer
+        )}
+      </>
+    );
+  }
+
+  return null;
 };
 
 export default GlobalAudioCallPopup;
