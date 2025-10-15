@@ -113,7 +113,6 @@ const startGroupAudioCall = async ({
     image: currentUser?.image,
   });
 
-  console.log("userData", userData)
 
   // 4️⃣ Update Redux
   dispatch(

@@ -48,7 +48,6 @@ const GlobalGroupAudioCallPopup = () => {
     mutedUsers,
     isScreenSharing,
   } = useSelector((state) => state.call);
-  console.log("calldata", callData)
 
   const [myUserId, setMyUserId] = useState(null);
   const [room, setRoom] = useState(null);
