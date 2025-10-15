@@ -210,7 +210,9 @@ const GlobalAudioCallPopup = () => {
 
             const participantId = participant?.identity
               ? `user-${participant.identity.replace("user-", "")}`
-              : `participant-${participant?.sid || Math.random().toString(36).slice(2, 8)}`;
+              : `participant-${
+                  participant?.sid || Math.random().toString(36).slice(2, 8)
+                }`;
 
             setRemoteAudioTracks((prev) => ({
               ...prev,
@@ -275,6 +277,10 @@ const GlobalAudioCallPopup = () => {
     }
 
     try {
+      // ✅ Set call active FIRST to prevent popup disappearing
+      dispatch(setCallActive(true));
+      dispatch(setCallStatus("accepted"));
+
       const identity = `user-${myUserId}`;
       const joinedRoom = await joinRoom(roomName, identity);
 
@@ -282,11 +288,10 @@ const GlobalAudioCallPopup = () => {
         socket.current?.emit("join-call", {
           roomName,
           userId: myUserId,
-          first_name: `${currentUser?.first_name || ""} ${currentUser?.last_name || ""}`.trim(),
+          first_name: `${currentUser?.first_name || ""} ${
+            currentUser?.last_name || ""
+          }`.trim(),
         });
-
-        dispatch(setCallActive(true));
-        dispatch(setCallStatus("accepted"));
 
         socket.current?.emit("call-accepted", {
           to: callerId,
@@ -294,10 +299,15 @@ const GlobalAudioCallPopup = () => {
           fromUserId: myUserId,
           fromUserName: `${currentUser?.first_name || ""}`.trim(),
         });
+      } else {
+        // If room join fails, revert state
+        dispatch(setCallActive(false));
+        dispatch(setCallStatus("calling"));
       }
     } catch (err) {
       console.error("❌ Accept call failed:", err);
       toast.error("Failed to accept call");
+      dispatch(setCallActive(false));
       dispatch(setCallStatus("failed"));
     }
   }, [myUserId, roomName, currentUser, callerId, joinRoom, socket, dispatch]);
@@ -318,7 +328,9 @@ const GlobalAudioCallPopup = () => {
           socket.current?.emit("join-call", {
             roomName,
             userId: myUserId,
-            first_name: `${currentUser?.first_name || ""} ${currentUser?.last_name || ""}`.trim(),
+            first_name: `${currentUser?.first_name || ""} ${
+              currentUser?.last_name || ""
+            }`.trim(),
           });
         }
       } catch (err) {
@@ -347,7 +359,9 @@ const GlobalAudioCallPopup = () => {
     if (!room) return;
 
     const totalParticipants = room.participants.size + 1;
-    const userName = `${currentUser?.first_name || ""} ${currentUser?.last_name || ""}`.trim();
+    const userName = `${currentUser?.first_name || ""} ${
+      currentUser?.last_name || ""
+    }`.trim();
 
     if (totalParticipants > 2) {
       socket.current?.emit("participant-left", {
@@ -431,7 +445,12 @@ const GlobalAudioCallPopup = () => {
   useEffect(() => {
     if (!socket?.current) return;
 
-    const handleIncomingCall = ({ roomName, callerId, callerName, callerImage }) => {
+    const handleIncomingCall = ({
+      roomName,
+      callerId,
+      callerName,
+      callerImage,
+    }) => {
       dispatch(
         setCallData({
           callerId,
@@ -486,7 +505,10 @@ const GlobalAudioCallPopup = () => {
     socket.current.on("participant-joined", handleParticipantJoined);
     socket.current.on("participant-left", handleParticipantLeft);
     socket.current.on("mute-toggle", handleMuteToggle);
-    socket.current.on("remote-start-screen-share", handleRemoteStartScreenShare);
+    socket.current.on(
+      "remote-start-screen-share",
+      handleRemoteStartScreenShare
+    );
     socket.current.on("remote-stop-screen-share", handleRemoteStopScreenShare);
 
     // Cleanup listeners
@@ -498,8 +520,14 @@ const GlobalAudioCallPopup = () => {
       socket.current.off("participant-joined", handleParticipantJoined);
       socket.current.off("participant-left", handleParticipantLeft);
       socket.current.off("mute-toggle", handleMuteToggle);
-      socket.current.off("remote-start-screen-share", handleRemoteStartScreenShare);
-      socket.current.off("remote-stop-screen-share", handleRemoteStopScreenShare);
+      socket.current.off(
+        "remote-start-screen-share",
+        handleRemoteStartScreenShare
+      );
+      socket.current.off(
+        "remote-stop-screen-share",
+        handleRemoteStopScreenShare
+      );
     };
   }, [socket?.current, myUserId, dispatch, handleCallAccepted, cleanupRoom]);
 
