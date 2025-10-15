@@ -542,6 +542,46 @@ const GlobalAudioCallPopup = () => {
     />
   );
 
+  const incomingUI = (
+    <IncomingAudioCall
+      callerName={callerName}
+      callerImage={callerImage}
+      isIncomingCall={isIncomingCall}
+      isCallActive={isCallActive}
+      callStatus={callStatus}
+      callerId={callerId}
+      handleAccept={handleAccept}
+      handleReject={handleReject}
+      handleHangUp={handleHangUp}
+      startScreenShare={startScreenShare}
+      stopScreenShare={stopScreenShare}
+      joinRoom={joinRoom}
+      localTrack={localTrack}
+      setIsScreenSharing={setIsScreenSharing}
+      remoteScreenTrack={remoteScreenTrack}
+      toggleMute={toggleMute}
+      isMuted={isMuted}
+    />
+  );
+
+  // 3️⃣ Outgoing Call UI
+  const outgoingUI = (
+    <OutgoingAudioCall
+      receiverName={receiverName}
+      receiverImage={receiverImage}
+      callStatus={callStatus}
+      handleHangUp={handleHangUp}
+      startScreenShare={startScreenShare}
+      stopScreenShare={stopScreenShare}
+      joinRoom={joinRoom}
+      localTrack={localTrack}
+      setIsScreenSharing={setIsScreenSharing}
+      remoteScreenTrack={remoteScreenTrack}
+      toggleMute={toggleMute}
+      isMuted={isMuted}
+    />
+  );
+
   return (
     <>
       {/* Hidden container for remote audio */}
@@ -550,42 +590,11 @@ const GlobalAudioCallPopup = () => {
       {remoteScreenTrack &&
         ReactDOM.createPortal(screenShareUI, popupContainer)}
 
-      {isReceiver ? (
-        <IncomingAudioCall
-          callerName={callerName}
-          callerImage={callerImage}
-          isIncomingCall={isIncomingCall}
-          isCallActive={isCallActive}
-          callStatus={callStatus}
-          callerId={callerId}
-          handleAccept={handleAccept}
-          handleReject={handleReject}
-          handleHangUp={handleHangUp}
-          startScreenShare={startScreenShare}
-          stopScreenShare={stopScreenShare}
-          joinRoom={joinRoom}
-          localTrack={localTrack}
-          setIsScreenSharing={setIsScreenSharing}
-          remoteScreenTrack={remoteScreenTrack}
-          toggleMute={toggleMute}
-          isMuted={isMuted}
-        />
-      ) : isCaller ? (
-        <OutgoingAudioCall
-          receiverName={receiverName}
-          receiverImage={receiverImage}
-          callStatus={callStatus}
-          handleHangUp={handleHangUp}
-          startScreenShare={startScreenShare}
-          stopScreenShare={stopScreenShare}
-          joinRoom={joinRoom}
-          localTrack={localTrack}
-          setIsScreenSharing={setIsScreenSharing}
-          remoteScreenTrack={remoteScreenTrack}
-          toggleMute={toggleMute}
-          isMuted={isMuted}
-        />
-      ) : null}
+      {isReceiver
+        ? ReactDOM.createPortal(incomingUI, popupContainer)
+        : isCaller
+        ? ReactDOM.createPortal(outgoingUI, popupContainer)
+        : null}
     </>
   );
 };
