@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import Cookies from "js-cookie";
 import { useSocket } from "../../../../context/SocketContext.jsx";
 import axios from "axios";
+import ReactDOM from "react-dom";
 import {
   clearCallState,
   setCallStatus,
@@ -528,8 +529,11 @@ const GlobalAudioCallPopup = () => {
 
   if (!shouldRender) return null;
 
+  const popupContainer = document.body;
+
+  // ✅ Screen share UI
   if (remoteScreenTrack) {
-    return (
+    return ReactDOM.createPortal(
       <GroupScreenShare
         callType="oneOnone"
         remoteScreenTrack={remoteScreenTrack}
@@ -537,13 +541,8 @@ const GlobalAudioCallPopup = () => {
         toggleMute={toggleMute}
         isMuted={localTrack ? !localTrack.isEnabled : false}
         remoteAudioTracks={remoteAudioTracks}
-        callerId={callerId}
-        receiverId={receiverId}
-        receiverImage={receiverImage}
-        callerImage={callerImage}
-        receiverName={receiverName}
-        callerName={callerName}
-      />
+      />,
+      popupContainer
     );
   }
 
