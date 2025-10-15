@@ -531,25 +531,24 @@ const GlobalAudioCallPopup = () => {
 
   const popupContainer = document.body;
 
-  // ✅ Screen share UI
-  if (remoteScreenTrack) {
-    return ReactDOM.createPortal(
-      <GroupScreenShare
-        callType="oneOnone"
-        remoteScreenTrack={remoteScreenTrack}
-        handleHangUp={handleHangUp}
-        toggleMute={toggleMute}
-        isMuted={localTrack ? !localTrack.isEnabled : false}
-        remoteAudioTracks={remoteAudioTracks}
-      />,
-      popupContainer
-    );
-  }
+  const screenShareUI = (
+    <GroupScreenShare
+      callType="oneOnone"
+      remoteScreenTrack={remoteScreenTrack}
+      handleHangUp={handleHangUp}
+      toggleMute={toggleMute}
+      isMuted={localTrack ? !localTrack.isEnabled : false}
+      remoteAudioTracks={remoteAudioTracks}
+    />
+  );
 
   return (
     <>
       {/* Hidden container for remote audio */}
       <div ref={audioContainerRef} style={{ display: "none" }} />
+
+      {remoteScreenTrack &&
+        ReactDOM.createPortal(screenShareUI, popupContainer)}
 
       {isReceiver ? (
         <IncomingAudioCall
