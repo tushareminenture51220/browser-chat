@@ -587,10 +587,9 @@ const GlobalAudioCallPopup = () => {
       {/* Hidden container for remote audio */}
       <div ref={audioContainerRef} style={{ display: "none" }} />
 
-      {remoteScreenTrack &&
-        ReactDOM.createPortal(screenShareUI, popupContainer)}
-
-      {isReceiver
+      {remoteScreenTrack
+        ? ReactDOM.createPortal(screenShareUI, popupContainer)
+        : isReceiver
         ? ReactDOM.createPortal(incomingUI, popupContainer)
         : isCaller
         ? ReactDOM.createPortal(outgoingUI, popupContainer)
