@@ -48,6 +48,7 @@ const GlobalGroupAudioCallPopup = () => {
     mutedUsers,
     isScreenSharing,
   } = useSelector((state) => state.call);
+  console.log("calldata", callData)
 
   const [myUserId, setMyUserId] = useState(null);
   const [room, setRoom] = useState(null);
@@ -573,6 +574,8 @@ const GlobalGroupAudioCallPopup = () => {
       isMuted={localTrack ? !localTrack.isEnabled : false}
       callerId={callerId}
       remoteAudioTracks={remoteAudioTracks}
+      groupName={groupName}
+      groupImage={groupImage}
     />
   );
 

@@ -14,14 +14,38 @@ const GroupScreenShare = ({
   callerId,
   remoteAudioTracks,
   callType = "groupShare",
+  receiverId,
+  receiverImage,
+  callerImage,
+  receiverName,
+  callerName,
+  groupName,
+  groupImage,
 }) => {
+  console.log("image", groupImage)
   const remoteScreenRef = useRef(null);
-  const nodeRef = useRef(null);
   const [isMinimized, setIsMinimized] = useState(false);
+  const [callDuration, setCallDuration] = useState("00:00");
 
   const { activeGroupParticipants, mutedUsers } = useSelector(
     (state) => state.call
   );
+
+
+  // Determine display name and image based on call type
+  const displayName = useMemo(() => {
+    if (callType === "groupShare" && groupName) {
+      return groupName;
+    }
+    return receiverName || callerName;
+  }, [callType, groupName, receiverName, callerName]);
+
+  const displayImage = useMemo(() => {
+    if (callType === "groupShare" && groupImage) {
+      return groupImage;
+    }
+    return receiverImage || callerImage;
+  }, [callType, groupImage, receiverImage, callerImage]);
 
   // Attach remote screen track
   useEffect(() => {
@@ -30,6 +54,18 @@ const GroupScreenShare = ({
       return () => remoteScreenTrack.detach(remoteScreenRef.current);
     }
   }, [remoteScreenTrack]);
+
+  // Call duration timer
+  useEffect(() => {
+    let seconds = 0;
+    const interval = setInterval(() => {
+      seconds++;
+      const mins = String(Math.floor(seconds / 60)).padStart(2, "0");
+      const secs = String(seconds % 60).padStart(2, "0");
+      setCallDuration(`${mins}:${secs}`);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   const sortedParticipants = useMemo(() => {
     return [...activeGroupParticipants].sort((a, b) => {
@@ -57,19 +93,32 @@ const GroupScreenShare = ({
         }`}
       />
 
+      {/* Minimized header-style popup */}
       {isMinimized && (
-        <div ref={nodeRef} className="mini-container">
-          <div className="mini-controls">
+        <div className="mini-header-container">
+          <div className="mini-left">
+            <div className="chat-avatar">
+              <img
+                src={`https://eminenture.live/public/chatting-files/${displayImage}`}
+                alt={displayName}
+              />
+            </div>
+            <div className="mini-user-info">
+              <p className="mini-username">{displayName}</p>
+              <p className="mini-time">In call. {callDuration}</p>
+            </div>
+          </div>
+          <div className="mini-right">
             <button
               onClick={() => setIsMinimized(false)}
-              className="maximize-btn"
+              className="mini-action-btn maximize"
               title="Maximize"
             >
               <Icon icon="ic:round-open-in-full" className="icon-sm" />
             </button>
             <button
               onClick={handleHangUp}
-              className="hangup-mini-btn"
+              className="mini-action-btn hangup"
               title="Hang Up"
             >
               <Icon icon="mdi:phone-hangup" className="icon-sm" />
@@ -78,35 +127,42 @@ const GroupScreenShare = ({
         </div>
       )}
 
-      {/* Bottom Controls — always visible */}
-      <div className="controls-container">
-        <div className="controls-box">
-          {/* Mic Button */}
-          <button
-            onClick={toggleMute}
-            title={isMuted ? "Unmute" : "Mute"}
-            className={`mute-btn ${isMuted ? "muted" : ""}`}
-          >
-            <Icon
-              icon={isMuted ? "ic:baseline-mic-off" : "ic:baseline-mic"}
-              className="icon-md"
-            />
-          </button>
+      {/* Hide controls when minimized */}
+      {!isMinimized && (
+        <div className="controls-container">
+          <div className="controls-box">
+            <button
+              onClick={toggleMute}
+              title={isMuted ? "Unmute" : "Mute"}
+              className={`mute-btn ${isMuted ? "muted" : ""}`}
+            >
+              <Icon
+                icon={isMuted ? "ic:baseline-mic-off" : "ic:baseline-mic"}
+                className="icon-md"
+              />
+            </button>
 
-          {/* Minimize Button */}
-          <button onClick={() => setIsMinimized(true)} title="Minimize" className="minimizing-btn">
-            <Icon icon="ic:round-close-fullscreen" className="icon-md" />
-          </button>
+            <button
+              onClick={() => setIsMinimized(true)}
+              title="Minimize"
+              className="minimizing-btn"
+            >
+              <Icon icon="ic:round-close-fullscreen" className="icon-md" />
+            </button>
 
-          {/* Hang Up Button */}
-          <button onClick={handleHangUp} title="Hang Up" className="hangup-btn">
-            <Icon icon="mdi:phone-hangup" className="icon-md" />
-          </button>
+            <button
+              onClick={handleHangUp}
+              title="Hang Up"
+              className="hangup-btn"
+            >
+              <Icon icon="mdi:phone-hangup" className="icon-md" />
+            </button>
+          </div>
         </div>
-      </div>
+      )}
 
-      {/* Participants Sidebar — only for group calls */}
-      {callType !== "oneOnone" && (
+      {/* Participants Sidebar */}
+      {callType !== "oneOnone" && !isMinimized && (
         <div className="participants-sidebar">
           {sortedParticipants.map((user) => (
             <ParticipantCard

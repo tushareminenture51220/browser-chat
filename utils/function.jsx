@@ -104,7 +104,7 @@ const startGroupAudioCall = async ({
   socket.current.emit("group-call-user", {
     groupId: userData.id,
     groupName: userData.name,
-    groupImage: userData.groupImage,
+    groupImage: userData.image,
     callType: "group-audio",
     callerId: currentUser.id,
     callerName: currentUser.first_name,
@@ -113,13 +113,15 @@ const startGroupAudioCall = async ({
     image: currentUser?.image,
   });
 
+  console.log("userData", userData)
+
   // 4️⃣ Update Redux
   dispatch(
     startOutgoingCall({
       isGroup: true,
       groupId: userData.id,
       groupName: userData.name,
-      groupImage: userData.groupImage || "",
+      groupImage: userData.image || "",
       callType: "group-audio",
       roomName,
       meetingLink,

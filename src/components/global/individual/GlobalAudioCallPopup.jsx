@@ -537,6 +537,12 @@ const GlobalAudioCallPopup = () => {
         toggleMute={toggleMute}
         isMuted={localTrack ? !localTrack.isEnabled : false}
         remoteAudioTracks={remoteAudioTracks}
+        callerId={callerId}
+        receiverId={receiverId}
+        receiverImage={receiverImage}
+        callerImage={callerImage}
+        receiverName={receiverName}
+        callerName={callerName}
       />
     );
   }
