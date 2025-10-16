@@ -58,9 +58,9 @@ const UserSection = ({ searchTerm, handleOpenChat, usersData }) => {
             <div className="chat-list-header">
               <h3>{user.first_name}</h3>
               {/* Unread badge */}
-              {user.unreadMessageCount > 0 && (
+              {/* {user.unreadMessageCount > 0 && (
                 <span className="unread-badge">{user.unreadMessageCount}</span>
-              )}
+              )} */}
             </div>
             <div className="chat-list-message">
               <p>{user.email}</p>
