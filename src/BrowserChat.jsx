@@ -21,6 +21,7 @@ const BrowserChat = ({ onClose: externalOnClose }) => {
   const { usersData, loggedInUser, onlineUsersData } = useSelector(
     (store) => store.usersData
   );
+  
   const { socket, unReadMessageCount } = useSocket();
 
   // Merge unread count and online status into users data

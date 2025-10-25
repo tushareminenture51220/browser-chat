@@ -31,7 +31,11 @@ export function SocketProvider({ children }) {
   useEffect(() => {
     const rawUserData = Cookies.get("HRMS_LoggedIn_UserData");
     const authToken = Cookies.get("HRMS_Auth_Token");
+    const XSRF = Cookies.get("XSRF-TOKEN");
+    const laravel = Cookies.get("laravel_session");
     console.log("data", rawUserData);
+    console.log("XSRF", XSRF);
+    console.log("laravel", laravel);
     
     
     if (!rawUserData || !authToken) {
