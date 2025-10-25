@@ -15,7 +15,7 @@ const TaggedPerson = ({ users, selectUser }) => {
               <img
                 src={
                   user?.user_profile
-                    ? `https://eminenture.live/public/chatting-files/${user.user_profile}`
+                    ? `https://api.eminenture.cloud/uploads/files/${user.user_profile}`
                     : "/default-user.png"
                 }
                 alt={user?.first_name || "User"}

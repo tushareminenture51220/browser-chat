@@ -154,7 +154,7 @@ const ForwardMessageModal = ({ onClose, message, onForwarded }) => {
                       <div className="item-avatar">
                         {user?.user_profile ? (
                           <img
-                            src={`https://eminenture.live/public/chatting-files/${user.user_profile}`}
+                            src={`https://api.eminenture.cloud/uploads/files/${user.user_profile}`}
                             alt={user?.first_name || "User"}
                             className="item-image"
                             onError={(e) => (e.target.style.display = "none")}
@@ -201,7 +201,7 @@ const ForwardMessageModal = ({ onClose, message, onForwarded }) => {
                         <div className="chat-avatar">
                           {group?.groupImage ? (
                             <img
-                              src={`https://eminenture.live/public/chatting-files/${group.groupImage}`}
+                              src={`https://api.eminenture.cloud/uploads/files/${group.groupImage}`}
                               alt={group?.name || "Group"}
                               onError={(e) => (e.target.style.display = "none")}
                             />

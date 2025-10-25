@@ -365,7 +365,7 @@ const BrowserChatWindow = ({ chatUser, onClose, index }) => {
           <div className="chat-avatar">
             {chatUser.image ? (
               <img
-                src={`https://eminenture.live/public/chatting-files/${chatUser.image}`}
+                src={`https://api.eminenture.cloud/uploads/files/${chatUser.image}`}
                 alt={chatUser.name}
               />
             ) : (

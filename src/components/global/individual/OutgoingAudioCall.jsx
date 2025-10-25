@@ -45,7 +45,7 @@ const OutgoingAudioCall = ({
             <img
               src={
                 receiverImage
-                  ? `https://eminenture.live/public/chatting-files/${receiverImage}`
+                  ? `https://api.eminenture.cloud/uploads/files/${receiverImage}`
                   : "/default-avatar.png"
               }
               alt="Receiver"

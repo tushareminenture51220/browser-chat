@@ -32,7 +32,7 @@ const AudioPlayer = ({ id, attachment_name }) => {
       <audio
         ref={audioRef}
         id={`audio-${id}`}
-        src={`https://eminenture.live/public/chatting-files/${attachment_name}`}
+        src={`https://api.eminenture.cloud/uploads/files/${attachment_name}`}
         onPlay={() => setIsPlaying(true)}
         onPause={() => setIsPlaying(false)}
         onEnded={() => setIsPlaying(false)} // reset when song ends

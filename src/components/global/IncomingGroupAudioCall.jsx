@@ -114,7 +114,7 @@ const IncomingGroupAudioCall = ({
       <div className="igac-card">
         <div className="igac-info">
           <img
-            src={groupImage ? `https://eminenture.live/public/chatting-files/${groupImage}` : ""}
+            src={groupImage ? `https://api.eminenture.cloud/uploads/files/${groupImage}` : ""}
             alt="Group"
             width={48}
             height={48}

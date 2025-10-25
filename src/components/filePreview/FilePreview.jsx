@@ -33,7 +33,7 @@ const FilePreview = ({ attachment_name, is_deleted, id }) => {
   if (!fileIconData) return null;
 
   const { icon, color } = fileIconData;
-  const fileUrl = `https://eminenture.live/public/chatting-files/${attachment_name}`;
+  const fileUrl = `https://api.eminenture.cloud/uploads/files/${attachment_name}`;
 
   const trimFileName = (name, maxLength = 20) => {
     if (!name) return "";

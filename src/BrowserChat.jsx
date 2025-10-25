@@ -79,7 +79,7 @@ const BrowserChat = ({ onClose: externalOnClose }) => {
             <img
               src={
                 loggedInUser?.image
-                  ? `https://eminenture.live/public/chatting-files/${loggedInUser.image}`
+                  ? `https://api.eminenture.cloud/uploads/files/${loggedInUser.image}`
                   : "/default-user.png"
               }
               alt={loggedInUser?.first_name || "User"}

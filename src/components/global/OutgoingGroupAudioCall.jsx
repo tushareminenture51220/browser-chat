@@ -98,7 +98,7 @@ const OutgoingGroupAudioCall = ({
           <img
             src={
               groupImage
-                ? `https://eminenture.live/public/chatting-files/${groupImage}`
+                ? `https://api.eminenture.cloud/uploads/files/${groupImage}`
                 : ""
             }
             alt="Group"
@@ -143,7 +143,7 @@ const OutgoingGroupAudioCall = ({
             <img
               src={
                 groupImage
-                  ? `https://eminenture.live/public/chatting-files/${groupImage}`
+                  ? `https://api.eminenture.cloud/uploads/files/${groupImage}`
                   : ""
               }
               alt="Group"

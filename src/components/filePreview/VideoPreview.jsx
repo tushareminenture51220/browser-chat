@@ -38,7 +38,7 @@ const VideoPreview = ({ attachment_name, is_deleted }) => {
     return null;
   }
 
-  const fileUrl = `https://eminenture.live/public/chatting-files/${attachment_name}`;
+  const fileUrl = `https://api.eminenture.cloud/uploads/files/${attachment_name}`;
 
   const togglePlay = () => {
     if (!videoRef.current) return;

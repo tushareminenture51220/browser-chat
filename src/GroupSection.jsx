@@ -33,7 +33,7 @@ const GroupSection = ({ searchTerm, handleOpenChat }) => {
           <div className="chat-avatar">
             {group.groupImage ? (
               <img
-                src={`https://eminenture.live/public/chatting-files/${group.groupImage}`}
+                src={`https://api.eminenture.cloud/uploads/files/${group.groupImage}`}
                 alt={group.name}
               />
             ) : (

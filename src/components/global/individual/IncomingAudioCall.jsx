@@ -54,7 +54,7 @@ const IncomingAudioCall = ({
             <img
               src={
                 callerImage
-                  ? `https://eminenture.live/public/chatting-files/${callerImage}`
+                  ? `https://api.eminenture.cloud/uploads/files/${callerImage}`
                   : "/default-avatar.png"
               }
               alt="Caller"

@@ -50,7 +50,7 @@ const ParticipantCard = ({
           <img
             src={
               user.image
-                && `https://eminenture.live/public/chatting-files/${user.image}`
+                && `https://api.eminenture.cloud/uploads/files/${user.image}`
             }
             alt={user.first_name || ""}
           />

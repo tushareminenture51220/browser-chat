@@ -99,7 +99,7 @@ const GroupScreenShare = ({
           <div className="mini-left">
             <div className="chat-avatar">
               <img
-                src={`https://eminenture.live/public/chatting-files/${displayImage}`}
+                src={`https://api.eminenture.cloud/uploads/files/${displayImage}`}
                 alt={displayName}
               />
             </div>
