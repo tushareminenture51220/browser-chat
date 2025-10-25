@@ -34,6 +34,7 @@ export function SocketProvider({ children }) {
     const XSRF = Cookies.get("XSRF-TOKEN");
     const laravel = Cookies.get("laravel_session");
     console.log("data", rawUserData);
+    console.log("authToken", authToken);
     console.log("XSRF", XSRF);
     console.log("laravel", laravel);
     
