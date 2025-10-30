@@ -21,7 +21,7 @@ const BrowserChat = ({ onClose: externalOnClose }) => {
   const { usersData, loggedInUser, onlineUsersData } = useSelector(
     (store) => store.usersData
   );
-  
+
   const { socket, unReadMessageCount } = useSocket();
 
   // Merge unread count and online status into users data
@@ -59,7 +59,7 @@ const BrowserChat = ({ onClose: externalOnClose }) => {
   const handleCloseChat = (id) => {
     setOpenChats((prev) => prev.filter((c) => c.id !== id));
   };
-
+console.log("loggedInUser", loggedInUser)
   return (
     <div className="chat-wrapper">
       <div className="chat-sidebar">
@@ -77,19 +77,21 @@ const BrowserChat = ({ onClose: externalOnClose }) => {
         {/* Current User */}
         <div className="chat-current-user">
           <div className="chat-avatar">
-            <img
-              src={
-                loggedInUser?.image
-                  ? `https://api.eminenture.cloud/uploads/files/${loggedInUser.image}`
-                  : "/default-user.png"
-              }
-              alt={loggedInUser?.first_name || "User"}
-            />
+            {loggedInUser?.image ? (
+              <img
+                src={`https://api.eminenture.cloud/uploads/files/${loggedInUser.image}`}
+                alt={loggedInUser?.first_name || "User"}
+              />
+            ) : (
+              <span>
+                {loggedInUser.first_name
+                  ? loggedInUser.first_name[0].toUpperCase()
+                  : "U"}
+              </span>
+            )}
           </div>
           <div>
-            <h2 className="chat-username">
-              {loggedInUser?.first_name || "T"}
-            </h2>
+            <h2 className="chat-username">{loggedInUser?.first_name || "T"}</h2>
             <p className="chat-status">Available</p>
           </div>
         </div>
