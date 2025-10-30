@@ -40,8 +40,10 @@ const BrowserChat = ({ onClose: externalOnClose }) => {
     setOpenChats((prev) => {
       const exists = prev.find((c) => c.id === chat.id);
       if (exists) return prev;
-      if (prev.length < 3) return [...prev, chat];
-      return [prev[1], prev[2], chat];
+      // if (prev.length < 3) return [...prev, chat];
+      // return [prev[1], prev[2], chat];
+      if (prev.length < 2) return [...prev, chat];
+      return [prev[1], chat];
     });
 
     // Emit to server that user has opened this chat (so unread can be cleared)
@@ -59,7 +61,7 @@ const BrowserChat = ({ onClose: externalOnClose }) => {
   const handleCloseChat = (id) => {
     setOpenChats((prev) => prev.filter((c) => c.id !== id));
   };
-console.log("loggedInUser", loggedInUser)
+  // console.log("loggedInUser", loggedInUser)
   return (
     <div className="chat-wrapper">
       <div className="chat-sidebar">
