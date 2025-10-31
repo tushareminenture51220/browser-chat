@@ -33,6 +33,7 @@
   transform: scale(0.95) translateY(20px);
   opacity: 0;
   transition: all 0.3s ease;
+  margin-top: 85px;
 }
 .popup-container.show {
   transform: scale(1) translateY(0);
@@ -85,7 +86,7 @@
 
 /* Preview */
 .popup-preview {
-  height: 24rem;
+  height: 20rem;
   background: linear-gradient(135deg, #f9fafb, #f3f4f6);
   display: flex;
   justify-content: center;
