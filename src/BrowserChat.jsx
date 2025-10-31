@@ -1,4 +1,3 @@
-// src/BrowserChat.jsx
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -36,32 +35,37 @@ const BrowserChat = ({ onClose: externalOnClose }) => {
     }
   }, [usersData, unReadMessageCount, onlineUsersData]);
 
+  // Notify server of open chat windows whenever openChats changes
+  useEffect(() => {
+    if (socket.current && loggedInUser) {
+      const openChatIds = openChats.map((chat) => chat.id);
+      if (openChatIds.length > 0) {
+        const payload = {
+          [loggedInUser.id]: openChatIds,
+        };
+        socket.current.emit("addChatWindowWidget", payload);
+      }
+    }
+  }, [openChats, socket, loggedInUser]);
+
   const handleOpenChat = (chat) => {
     setOpenChats((prev) => {
       const exists = prev.find((c) => c.id === chat.id);
       if (exists) return prev;
-      // if (prev.length < 3) return [...prev, chat];
-      // return [prev[1], prev[2], chat];
       if (prev.length < 2) return [...prev, chat];
       return [prev[1], chat];
     });
-
-    // Emit to server that user has opened this chat (so unread can be cleared)
-    if (socket.current) {
-      const LoggedInUser = loggedInUser;
-      if (!LoggedInUser) return;
-
-      const payload = {
-        [LoggedInUser.id]: [chat.id],
-      };
-      socket.current.emit("addChatWindowWidget", payload);
-    }
   };
 
   const handleCloseChat = (id) => {
     setOpenChats((prev) => prev.filter((c) => c.id !== id));
+
+    if (socket.current && loggedInUser) {
+      const payload = { [loggedInUser.id]: [id] };
+      socket.current.emit("removeChatWindowWidget", payload);
+    }
   };
-  // console.log("loggedInUser", loggedInUser)
+
   return (
     <div className="chat-wrapper">
       <div className="chat-sidebar">
@@ -114,7 +118,7 @@ const BrowserChat = ({ onClose: externalOnClose }) => {
           <UserSection
             searchTerm={searchTerm}
             handleOpenChat={handleOpenChat}
-            usersData={updatedUsersData} // Pass users with unread counts
+            usersData={updatedUsersData}
           />
         ) : (
           <GroupSection
