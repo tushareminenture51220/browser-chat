@@ -109,7 +109,7 @@ export function SocketProvider({ children }) {
 
     // 📬 Unread message count
     socket.current.on("unreadMessageCount", (count) => {
-      console.log("📬 Unread message count received:", count);
+      // console.log("📬 Unread message count received:", count);
       setUnReadMessageCount((prev) => ({
         ...prev,
         ...count,

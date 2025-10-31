@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import ReactDOM from "react-dom";
 import { Icon } from "@iconify/react";
 import axios from "axios";
 import Cookies from "js-cookie";
@@ -202,7 +203,7 @@ const BrowserChatWindow = ({ chatUser, onClose, index }) => {
     socket.current.on("message-saved", handleSaved);
     socket.current.on("receive-group-msg", handleGroupMsg);
     socket.current.on("group-call-ended", handleGroupCallEnded);
-    socket.current.on("message-deleted", handleDeleted); // ✅ new listener
+    socket.current.on("message-deleted", handleDeleted);
 
     // Cleanup
     return () => {
@@ -210,7 +211,7 @@ const BrowserChatWindow = ({ chatUser, onClose, index }) => {
       socket.current.off("message-saved", handleSaved);
       socket.current.off("receive-group-msg", handleGroupMsg);
       socket.current.off("group-call-ended", handleGroupCallEnded);
-      socket.current.off("message-deleted", handleDeleted); // ✅ remove listener
+      socket.current.off("message-deleted", handleDeleted);
     };
   }, [socket.current, chatUser?.id, LoggedInUser?.id, isGroup]);
 
@@ -248,7 +249,7 @@ const BrowserChatWindow = ({ chatUser, onClose, index }) => {
         receiver_id: chatUser.id,
         isTyping: false,
       });
-    }, 1500);
+    }, 1000);
   };
 
   const selectUser = (user) => {
@@ -331,6 +332,7 @@ const BrowserChatWindow = ({ chatUser, onClose, index }) => {
   };
 
   const rightOffset = 336 + index * 336;
+  const popupContainer = document.body;
 
   const groupMessagesByDate = (messages) => {
     const grouped = {};
@@ -518,23 +520,25 @@ const BrowserChatWindow = ({ chatUser, onClose, index }) => {
         />
       )}
 
-      {/* File Preview */}
-      {showPreview && (
-        <FilePreviewPopup
-          key={fileResData.uniqueId}
-          attachment_file={fileResData?.file}
-          attachment_name={fileResData?.attachment_name}
-          attachment_size={fileResData?.attachment_size}
-          userName={chatUser.name}
-          dispatch={dispatch}
-          handleSubmit={handleSend}
-          setTextMessage={setNewMessage}
-          setShowPreview={setShowPreview}
-          chatId={chatUser.id}
-          setFileResData={setFileResData}
-          groupName={isGroup ? chatUser.name : null}
-        />
-      )}
+      {/* File Preview - Using React Portal */}
+      {showPreview &&
+        ReactDOM.createPortal(
+          <FilePreviewPopup
+            key={fileResData.uniqueId}
+            attachment_file={fileResData?.file}
+            attachment_name={fileResData?.attachment_name}
+            attachment_size={fileResData?.attachment_size}
+            userName={chatUser.name}
+            dispatch={dispatch}
+            handleSubmit={handleSend}
+            setTextMessage={setNewMessage}
+            setShowPreview={setShowPreview}
+            chatId={chatUser.id}
+            setFileResData={setFileResData}
+            groupName={isGroup ? chatUser.name : null}
+          />,
+          popupContainer
+        )}
     </div>
   );
 };

@@ -66,6 +66,8 @@ const BrowserChat = ({ onClose: externalOnClose }) => {
     }
   };
 
+  console.log("loggedInUser", loggedInUser)
+
   return (
     <div className="chat-wrapper">
       <div className="chat-sidebar">
